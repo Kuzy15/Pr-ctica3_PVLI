@@ -18,20 +18,22 @@ var PlayScene = {
     //Método constructor...
   create: function () {
       //Creamos al player con un sprite por defecto.
-      //TODO 5 Creamos a rush 'rush'  con el sprite por defecto en el 10, 10 con la animación por defecto 'rush_idle01'
-      this._rush = this.game.add.sprite(10,10, 'rush');
-      //TODO 4: Cargar el tilemap 'tilemap' y asignarle al tileset 'patrones' la imagen de sprites 'tiles'
+      
+      this._rush = this.game.add.sprite(30,1350, 'rush');
       this.map = this.game.add.tilemap('tilemap');
       this.map.addTilesetImage('patrones','tiles');
+	  this.map.addTilesetImage('patrones2', 'tilesPared');
+	  this.map.addTilesetImage('patrones3', 'tilesFiccion');
       //Creacion de las layers
       this.backgroundLayer = this.map.createLayer('BackgroundLayer');
-      this.groundLayer = this.map.createLayer('GroundLayer');
+      this.groundLayer = this.map.createLayer('Estructuras');
       //plano de muerte
       this.death = this.map.createLayer('Death');
       //Colisiones con el plano de muerte y con el plano de muerte y con suelo.
       this.map.setCollisionBetween(1, 5000, true, 'Death');
-      this.map.setCollisionBetween(1, 5000, true, 'GroundLayer');
+      this.map.setCollisionBetween(1, 5000, true, 'Estructuras');
       this.death.visible = false;
+	  //this.backgroundLayer.visible = false;
       //Cambia la escala a x3.
       this.groundLayer.setScale(3,3);
       this.backgroundLayer.setScale(3,3);
@@ -45,12 +47,17 @@ var PlayScene = {
       this._rush.animations.add('stop',
                     Phaser.Animation.generateFrameNames('rush_idle',1,1,'',2),0,false);
       this._rush.animations.add('jump',
-                     Phaser.Animation.generateFrameNames('rush_jump',2,2,'',2),0,false);
+                     Phaser.Animation.generateFrameNames('rush_jump',2,2,'',2),0,false); 
       this.configure();
   },
     
     //IS called one per frame.
     update: function () {
+		
+		//DEBUGS
+		this.game.debug.cameraInfo(this.game.camera, 32, 32);
+		
+		//-----------------------------
         var moveDirection = new Phaser.Point(0, 0);
         var collisionWithTilemap = this.game.physics.arcade.collide(this._rush, this.groundLayer);
         var movement = this.GetMovement();
@@ -179,7 +186,8 @@ var PlayScene = {
     //configure the scene
     configure: function(){
         //Start the Arcade Physics systems
-        this.game.world.setBounds(0, 0, 2400, 160);
+        //this.game.world.setBounds(0, 0, 2400, 160);
+		this.game.world.setBounds(0, 0, 7200, 1550);
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
         this.game.stage.backgroundColor = '#a9f0ff';
         this.game.physics.arcade.enable(this._rush);
@@ -189,6 +197,7 @@ var PlayScene = {
         this._rush.body.gravity.x = 0;
         this._rush.body.velocity.x = 0;
         this.game.camera.follow(this._rush);
+		this.game.camera.setSize(200,200)		
     },
     //move the player
     movement: function(point, xMin, xMax){

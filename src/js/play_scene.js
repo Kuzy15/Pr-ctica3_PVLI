@@ -19,7 +19,7 @@ var PlayScene = {
   create: function () {
       //Creamos al player con un sprite por defecto.
       
-      this._rush = this.game.add.sprite(30,1350, 'rush');
+      //this._rush = this.game.add.sprite(30,1350, 'rush');
       this.map = this.game.add.tilemap('tilemap');
       this.map.addTilesetImage('patrones','tiles');
 	  this.map.addTilesetImage('patrones2', 'tilesPared');
@@ -29,13 +29,14 @@ var PlayScene = {
       this.groundLayer = this.map.createLayer('Estructuras');
       //plano de muerte
       this.death = this.map.createLayer('Death');
+	   this._rush = this.game.add.sprite(70,1350, 'rush');
       //Colisiones con el plano de muerte y con el plano de muerte y con suelo.
       this.map.setCollisionBetween(1, 5000, true, 'Death');
       this.map.setCollisionBetween(1, 5000, true, 'Estructuras');
-	  //this.backgroundLayer.visible = false;
+	  //this.backgroundLayer.visible = false; 
       //Cambia la escala a x3.
       this.groundLayer.setScale(3,3);
-      this.backgroundLayer.setScale(3,3);
+      this.backgroundLayer.setScale(3,3); 
       this.death.setScale(3,3);
       
       //this.groundLayer.resizeWorld(); //resize world and adjust to the screen
@@ -196,7 +197,7 @@ var PlayScene = {
         this._rush.body.gravity.x = 0;
         this._rush.body.velocity.x = 0;
         this.game.camera.follow(this._rush);
-		this.game.camera.setSize(200,200)		
+		this.game.camera.setSize(700,500)		
     },
     //move the player
     movement: function(point, xMin, xMax){

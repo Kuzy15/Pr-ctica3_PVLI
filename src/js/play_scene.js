@@ -32,7 +32,6 @@ var PlayScene = {
       //Colisiones con el plano de muerte y con el plano de muerte y con suelo.
       this.map.setCollisionBetween(1, 5000, true, 'Death');
       this.map.setCollisionBetween(1, 5000, true, 'Estructuras');
-      this.death.visible = false;
 	  //this.backgroundLayer.visible = false;
       //Cambia la escala a x3.
       this.groundLayer.setScale(3,3);
@@ -212,6 +211,8 @@ var PlayScene = {
     destroyResources: function(){
         this.tilemap.destroy();
         this.tiles.destroy();
+		this.tilesFiccion.destroy();
+		this.tilesPared.destroy();
         this.game.world.setBounds(0,0,800,600);
     },
 	
@@ -220,7 +221,6 @@ var PlayScene = {
 		if (this.game.input.keyboard.downDuration(Phaser.Keyboard.UP,5) && !this._doubleJump && this._alreadyJump){
 					this._initialJumpHeight = this._rush.y;
 					this._doubleJump = true;	
-					console.log("salto");
 					return true;
 				} 
 		return false;

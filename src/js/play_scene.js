@@ -55,7 +55,7 @@ var PlayScene = {
     update: function () {
 		
 		//DEBUGS
-		this.game.debug.cameraInfo(this.game.camera, 32, 32);
+		//console.log('ea', this._playerState);
 		
 		//-----------------------------
         var moveDirection = new Phaser.Point(0, 0);
@@ -89,7 +89,6 @@ var PlayScene = {
                 var currentJumpHeight = this._rush.y - this._initialJumpHeight;
                 this._playerState = (currentJumpHeight*currentJumpHeight < this._jumpHight*this._jumpHight)
                     ? PlayerState.JUMP : PlayerState.FALLING;
-				//if ((this._jumpHight - currentJumpHeight) <= 30)  this._alreadyJump = true;
 				this._alreadyJump = true;
                 break;
                  
@@ -107,6 +106,7 @@ var PlayScene = {
                     }
                 }
 				else if (this.doubleJump()){
+					
 					this._playerState = PlayerState.JUMP;
 				}
                 break;     
@@ -131,7 +131,14 @@ var PlayScene = {
                         this._rush.scale.x *= -1; 
                 }
                 if(this._playerState === PlayerState.JUMP){
-                    moveDirection.y = -this._jumpSpeed;
+						 
+						if (this._rush.body.blocked.up || this._rush.body.touching.up){
+							this._playerState = PlayerState.FALLING;
+							
+						}
+						else {
+							moveDirection.y = -this._jumpSpeed;
+						}
 					
 				}
                 if(this._playerState === PlayerState.FALLING){
@@ -141,7 +148,7 @@ var PlayScene = {
                 break;    
         }
         //movement
-        this.movement(moveDirection,5,
+        this.movement(moveDirection,5, 
                       this.backgroundLayer.layer.widthInPixels*this.backgroundLayer.scale.x - 10);
         this.checkPlayerFell();
     },

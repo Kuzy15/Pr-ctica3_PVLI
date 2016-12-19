@@ -11,6 +11,8 @@ var PlayScene = {
     _speed: 300, //velocidad del player
     _jumpSpeed: 600, //velocidad de salto
     _jumpHight: 60, //altura máxima del salto.
+	_jetPackPower: 500,
+	_jetPack: 500,
     _playerState: PlayerState.STOP, //estado del player
     _direction: Direction.NONE,  //dirección inicial del player. NONE es ninguna dirección.
 	_doubleJump: false, //Booleano que nos permite ver si ya se ha realizado el doble salto.
@@ -55,7 +57,7 @@ var PlayScene = {
     update: function () {
 		
 		//DEBUGS
-		//console.log('ea', this._playerState);
+		//console.log('ea', this._jetPack);
 		
 		//-----------------------------
         var moveDirection = new Phaser.Point(0, 0);
@@ -66,7 +68,7 @@ var PlayScene = {
         {
             case PlayerState.STOP:
             case PlayerState.RUN:
-                if(this.isJumping(collisionWithTilemap)){
+                if(this.isJumping(collisionWithTilemap)){ 
                     this._playerState = PlayerState.JUMP;
 					//this._alreadyJump = true;
                     this._initialJumpHeight = this._rush.y;
@@ -85,16 +87,23 @@ var PlayScene = {
                 break;
                  
             case PlayerState.JUMP:
-				this.doubleJump();
+				if (!this.doubleJump()){
                 var currentJumpHeight = this._rush.y - this._initialJumpHeight;
                 this._playerState = (currentJumpHeight*currentJumpHeight < this._jumpHight*this._jumpHight)
                     ? PlayerState.JUMP : PlayerState.FALLING;
 				this._alreadyJump = true;
                 break;
+				}
+				else {
+					if (this._jetPack <= 15)
+						this._playerState = PlayerState.FALLING;
+					else this._playerState = PlayerState.JUMP;
+				}
                  
             case PlayerState.FALLING:
                 if(this.isStanding()){
-					this._doubleJump = false;
+					//this._doubleJump = false;
+					this._jetPack = this._jetPackPower;
 					this._alreadyJump = false;
                     if(movement !== Direction.NONE){
                         this._playerState = PlayerState.RUN;
@@ -142,8 +151,14 @@ var PlayScene = {
 					
 				}
                 if(this._playerState === PlayerState.FALLING){
-                    moveDirection.y = 0;   
-					
+                    moveDirection.y = 0;
+					/*
+						if (this.doubleJump()){
+						this._playerState = PlayerState.JUMP;
+						this._alreadyJump = true;
+						console.log('entra');
+						
+						}*/
 				}
                 break;    
         }
@@ -226,9 +241,10 @@ var PlayScene = {
 	
 	doubleJump: function(){
 		
-		if (this.game.input.keyboard.downDuration(Phaser.Keyboard.UP,5) && !this._doubleJump && this._alreadyJump){
+		if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP) && /*!this._doubleJump*/ this._jetPack >= 15 && this._alreadyJump){
 					this._initialJumpHeight = this._rush.y;
-					this._doubleJump = true;	
+					//this._doubleJump = true;	
+					this._jetPack -= 5;
 					return true;
 				} 
 		return false;

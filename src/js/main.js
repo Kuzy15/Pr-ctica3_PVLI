@@ -27,20 +27,20 @@ var BootScene = {
 var PreloaderScene = {
   preload: function () {
     this.loadingBar = this.game.add.sprite(100,300, 'preloader_bar');
-    this.loadingBar.anchor.setTo(0, 0.5); 
+    this.loadingBar.anchor.setTo(0, 0.5);
     this.game.load.setPreloadSprite(this.loadingBar);
     this.game.stage.backgroundColor = "#000000";
-    
-    
-    
+
+
+
     this.load.onLoadStart.add(this.loadStart, this);
- 
+
       this.game.load.image('tiles', 'images/simples_pimples.png');
 	  this.game.load.image('tilesFiccion', 'images/tiles3.png');
 	  this.game.load.image('tilesPared', 'images/tiles2.png');
       this.game.load.tilemap('tilemap', 'images/mapa.json', null, Phaser.Tilemap.TILED_JSON);
       this.game.load.atlas('rush', 'images/rush_spritesheet.png', 'images/rush_spritesheet.json', Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
-
+      this.game.load.image('zombie', 'images/Flag_Zombie_(Sprite).png');
 
     this.load.onLoadComplete.add(this.loadComplete,this);
 
@@ -56,9 +56,9 @@ var PreloaderScene = {
   	this.game.state.start('play');
 
   },
-    
-    
-  
+
+
+
     update: function(){
         this._loadingBar
     }
@@ -66,22 +66,22 @@ var PreloaderScene = {
 
 
 var wfconfig = {
- 
-    active: function() { 
+
+    active: function() {
         console.log("font loaded");
         init();
     },
- 
+
     google: {
         families: ['Sniglet']
     }
- 
+
 };
- 
+
 
 
 window.onload = function () {
- 
+
  	WebFont.load(wfconfig);
 
 
@@ -96,8 +96,6 @@ function init(){
                 game.state.add('play',playScene);
                 game.state.add('gameOver', gameOver);
                 game.state.start('boot');
-    
+
 
 };
-
-

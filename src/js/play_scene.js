@@ -5,6 +5,8 @@
 var PlayerState = {'JUMP':0, 'RUN':1, 'FALLING':2, 'STOP':3}
 var Direction = {'LEFT':0, 'RIGHT':1, 'NONE':3}
 
+
+
 //Scena de juego.
 var PlayScene = {
     _rush: {}, //player
@@ -18,46 +20,64 @@ var PlayScene = {
 	_doubleJump: false, //Booleano que nos permite ver si ya se ha realizado el doble salto.
 	_alreadyJump: false, //Booleano que nos permite ver si ya se ha realizado el primer salto.
 
-  _enemigoMoveDir: false,//variables de los enemigos para cambiar su dirección...
+  //_enemigoMoveDir: false,//variables de los enemigos para cambiar su dirección...
+
+    _enemies: {},
 
 
-  //El pool de los enemigos...
- pool: function(game, entities) {
+//---------------------------------------------------------------------------------
+
+//No se hacerlo de estar forma, me da error por la herencia (prototypes)
+
+  /*//El pool de los enemigos...
+   Pool: function(game, entities) {
      this._group = game.add.group();
      this._group.addMultile(entities);
      this._group.callAll('kill');
   },
   //Spawnea una nueva entidad enemigo del propio pool.
-  Pool.prototype.spawn = function (x, y) {
+   spawn: function(x, y) {
     var entity = this._group.getFirstExists(false);
     if (entity) {
       entity.reset(x, y);
     }
     return entity;
-},
+  },
  Zombies: function(game) {//No se si va aquí o fuera...
     Phaser.Sprite.call(this, game, 0, 0, 'zombie');
-},
-Zombies.prototype = Object.create(Phaser.Sprite.prototype),
-Zombies.constructor = Zombies,
+ },
+ Zombies.prototype = Object.create(Phaser.Sprite.prototype);
+ Zombies.constructor = Zombies;
 
-Zombies.prototype.update = function (){
+ Zombies.prototype.update: function (){
   if(this.x >= this.game.world.weight/2 || this.x <= 0 ) _enemigoMoveDir = true;//Creo que está mal...
   else _enemigoMoveDir = false;
 
   if(_enemigoMoveDir) this.x += 2;
   else this.x -= 2;
-},
+}*/
+
+//--------------------------------------------------------------------------------
+
     //Método constructor...
   create: function () {
       //Creamos al player con un sprite por defecto.
-      var pool;
+
+
+
+    /*  _enemies.enableBody = true;
+      _enemies.physicsBodyType = Phaser.Physiscs.ARCADE;*/
+
+      this.createEnemies();
+      /*var pool;
       var zombies = [];
           for (var i = 0; i < 5; i++) {
               zombies.push(new Zombies(this.game));
           }
-          pool = new Pool(this.game, zombies);
+          pool = new Pool(this.game, zombies);*/
+
       //this._rush = this.game.add.sprite(30,1350, 'rush');
+
       this.map = this.game.add.tilemap('tilemap');
       this.map.addTilesetImage('patrones','tiles');
 	  this.map.addTilesetImage('patrones2', 'tilesPared');
@@ -68,7 +88,7 @@ Zombies.prototype.update = function (){
       //plano de muerte
       this.death = this.map.createLayer('Death');
 	   this._rush = this.game.add.sprite(70,1350, 'rush');
-      //Colisiones con el plano de muerte y con el plano de muerte y con suelo.
+      //Colisiones con el plano de muerte y con suelo.
       this.map.setCollisionBetween(1, 5000, true, 'Death');
       this.map.setCollisionBetween(1, 5000, true, 'Estructuras');
 	  //this.backgroundLayer.visible = false;
@@ -96,7 +116,11 @@ Zombies.prototype.update = function (){
 		//console.log('ea', this._jetPack);
 
 		//-----------------------------
-        pool.spawn(0, 0);
+        /*pool.spawn(0, 0);
+        for(each var in zombies){
+
+          this.var.update();
+        }*/
 
         var moveDirection = new Phaser.Point(0, 0);
         var collisionWithTilemap = this.game.physics.arcade.collide(this._rush, this.groundLayer);
@@ -204,6 +228,17 @@ Zombies.prototype.update = function (){
         this.movement(moveDirection,5,
                       this.backgroundLayer.layer.widthInPixels*this.backgroundLayer.scale.x - 10);
         this.checkPlayerFell();
+
+        this.onCollisonEnemy();
+    },
+
+    createEnemies: function (){
+
+        for(var x = 0; x < 3; x++){
+          var enemy = this._enemies.create(x * 5, 0, 'zombie');
+          //enemy.anchor.set(0.5, 0.5);
+        }
+
     },
 
 
@@ -211,7 +246,7 @@ Zombies.prototype.update = function (){
         return this.isStanding() && collisionWithTilemap || this._jamping;
     },
 
-    onPlayerFell: function(){
+    onPlayerDie: function(){
         //TODO 6 Carga de 'gameOver';
         this.game.state.start('gameOver');
 
@@ -219,7 +254,7 @@ Zombies.prototype.update = function (){
 
     checkPlayerFell: function(){
         if(this.game.physics.arcade.collide(this._rush, this.death))
-            this.onPlayerFell();
+            this.onPlayerDie();
     },
 
     isStanding: function(){
@@ -251,6 +286,9 @@ Zombies.prototype.update = function (){
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
         this.game.stage.backgroundColor = '#a9f0ff';
         this.game.physics.arcade.enable(this._rush);
+
+        this._enemies = this.game.add.group();
+        this._enemies = game.add.physicsGroup();
 
         this._rush.body.bounce.y = 0.2;
         this._rush.body.gravity.y = 20000;
@@ -287,6 +325,12 @@ Zombies.prototype.update = function (){
 				}
 		return false;
 	},
+
+  onCollisonEnemy: function() {//De momento está puesto para que si toca al enemigo en cualquier lado se muera
+
+    if(this.game.physics.arcade.collide(this._rush, this._enemies));
+      this.onPlayerDie();
+  }
 };
 
 module.exports = PlayScene;

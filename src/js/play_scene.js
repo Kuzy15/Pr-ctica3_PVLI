@@ -55,20 +55,20 @@ var PlayScene = {
 
   if(_enemigoMoveDir) this.x += 2;
   else this.x -= 2;
-}*/
+},*/
 
 //--------------------------------------------------------------------------------
 
     //Método constructor...
   create: function () {
-      //Creamos al player con un sprite por defecto.
+      
 
 
 
     /*  _enemies.enableBody = true;
       _enemies.physicsBodyType = Phaser.Physiscs.ARCADE;*/
 
-      this.createEnemies();
+     //this.createEnemies();
       /*var pool;
       var zombies = [];
           for (var i = 0; i < 5; i++) {
@@ -87,7 +87,7 @@ var PlayScene = {
       this.groundLayer = this.map.createLayer('Estructuras');
       //plano de muerte
       this.death = this.map.createLayer('Death');
-	   this._rush = this.game.add.sprite(70,1350, 'rush');
+	  this._rush = this.game.add.sprite(70,1350, 'rush');
       //Colisiones con el plano de muerte y con suelo.
       this.map.setCollisionBetween(1, 5000, true, 'Death');
       this.map.setCollisionBetween(1, 5000, true, 'Estructuras');

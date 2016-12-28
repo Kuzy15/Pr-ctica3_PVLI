@@ -20,11 +20,10 @@ var PlayScene = {
 	_doubleJump: false, //Booleano que nos permite ver si ya se ha realizado el doble salto.
 	_alreadyJump: false, //Booleano que nos permite ver si ya se ha realizado el primer salto.
 
+
+//CODIGO DE ENEMIGOS
   //_enemigoMoveDir: false,//variables de los enemigos para cambiar su dirección...
-
-    _enemies: {},
-
-
+  //  _enemies: {},
 //---------------------------------------------------------------------------------
 
 //No se hacerlo de estar forma, me da error por la herencia (prototypes)
@@ -61,10 +60,10 @@ var PlayScene = {
 
     //Método constructor...
   create: function () {
-      
 
 
 
+//CODIGO DE ENEMIGOS
     /*  _enemies.enableBody = true;
       _enemies.physicsBodyType = Phaser.Physiscs.ARCADE;*/
 
@@ -75,6 +74,8 @@ var PlayScene = {
               zombies.push(new Zombies(this.game));
           }
           pool = new Pool(this.game, zombies);*/
+
+
 
       //this._rush = this.game.add.sprite(30,1350, 'rush');
 
@@ -116,11 +117,15 @@ var PlayScene = {
 		//console.log('ea', this._jetPack);
 
 		//-----------------------------
+
+//CODIGO DE ENEMIGOS
         /*pool.spawn(0, 0);
         for(each var in zombies){
 
           this.var.update();
         }*/
+
+
 
         var moveDirection = new Phaser.Point(0, 0);
         var collisionWithTilemap = this.game.physics.arcade.collide(this._rush, this.groundLayer);
@@ -229,17 +234,17 @@ var PlayScene = {
                       this.backgroundLayer.layer.widthInPixels*this.backgroundLayer.scale.x - 10);
         this.checkPlayerFell();
 
-        this.onCollisonEnemy();
+        //this.onCollisonEnemy();
     },
-
-    createEnemies: function (){
+//CODIGO DE ENEMIGOS
+    /*createEnemies: function (){
 
         for(var x = 0; x < 3; x++){
           var enemy = this._enemies.create(x * 5, 0, 'zombie');
           //enemy.anchor.set(0.5, 0.5);
         }
 
-    },
+    },*/
 
 
     canJump: function(collisionWithTilemap){
@@ -287,8 +292,10 @@ var PlayScene = {
         this.game.stage.backgroundColor = '#a9f0ff';
         this.game.physics.arcade.enable(this._rush);
 
-        this._enemies = this.game.add.group();
-        this._enemies = game.add.physicsGroup();
+
+//CODIGO DE ENEMIGOS
+        /*this._enemies = this.game.add.group();
+        this._enemies = game.add.physicsGroup();*/
 
         this._rush.body.bounce.y = 0.2;
         this._rush.body.gravity.y = 20000;
@@ -324,13 +331,14 @@ var PlayScene = {
 					return true;
 				}
 		return false;
-	},
+	}
 
-  onCollisonEnemy: function() {//De momento está puesto para que si toca al enemigo en cualquier lado se muera
+//CODIGO DE ENEMIGOS
+  /*onCollisonEnemy: function() {//De momento está puesto para que si toca al enemigo en cualquier lado se muera
 
     if(this.game.physics.arcade.collide(this._rush, this._enemies));
       this.onPlayerDie();
-  }
+  }*/
 };
 
 module.exports = PlayScene;

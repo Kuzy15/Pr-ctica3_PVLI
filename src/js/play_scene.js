@@ -17,7 +17,8 @@ var PlayScene = {
 	_jetPack: 500,
     _playerState: PlayerState.STOP, //estado del player
     _direction: Direction.NONE,  //dirección inicial del player. NONE es ninguna dirección.
-	_doubleJump: false, //Booleano que nos permite ver si ya se ha realizado el doble salto.
+	_doubleJump: false,
+	_powerCropRect:0,	//Booleano que nos permite ver si ya se ha realizado el doble salto.
 	_alreadyJump: false, //Booleano que nos permite ver si ya se ha realizado el primer salto.
 
 
@@ -88,7 +89,15 @@ var PlayScene = {
       this.groundLayer = this.map.createLayer('Estructuras');
       //plano de muerte
       this.death = this.map.createLayer('Death');
-	  this._rush = this.game.add.sprite(70,1350, 'rush');
+	  this._rush = this.game.add.sprite(70,3350, 'rush');
+	  this._rush.powerBar = this.game.add.sprite(0,0,'powerbar');
+	  this._rush.powerBar.cropEnabled = true;
+	  //this._rush.powerBar.crop.width = (this._jetPack / this._jetPackPower) * this._rush.powerBar.width;
+	  this._rush.addChild(this._rush.powerBar);
+	  this._rush.powerBar.scale.setTo(0.2,0.2);
+	  this._rush.powerBar.x = -6;
+	  this._rush.powerBar.angle = 90;
+	  
       //Colisiones con el plano de muerte y con suelo.
       this.map.setCollisionBetween(1, 5000, true, 'Death');
       this.map.setCollisionBetween(1, 5000, true, 'Estructuras');
@@ -130,6 +139,12 @@ var PlayScene = {
         var moveDirection = new Phaser.Point(0, 0);
         var collisionWithTilemap = this.game.physics.arcade.collide(this._rush, this.groundLayer);
         var movement = this.GetMovement();
+		
+	
+		/*this._rush.powerBar.crop.width = ((this._jetPack / this._jetPackPower) * this._rush.powerBar.width);
+		this._rush.powerBar.updateCrop();
+		//console.log(this._rush.powerBar.crop);*/
+		
         //transitions
         switch(this._playerState)
         {
@@ -287,7 +302,7 @@ var PlayScene = {
     configure: function(){
         //Start the Arcade Physics systems
         //this.game.world.setBounds(0, 0, 2400, 160);
-		this.game.world.setBounds(0, 0, 7200, 1550);
+		this.game.world.setBounds(0, 0, 2200, 7550);
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
         this.game.stage.backgroundColor = '#a9f0ff';
         this.game.physics.arcade.enable(this._rush);
@@ -321,6 +336,7 @@ var PlayScene = {
 		this.tilesPared.destroy();
         this.game.world.setBounds(0,0,800,600);
     },
+	
 
 	doubleJump: function(){
 

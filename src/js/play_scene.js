@@ -1,5 +1,7 @@
 'use strict';
 
+var Pool = require('./Pool');
+var Enemy = require('./Enemy');
 //Enumerados: PlayerState son los estado por los que pasa el player. Directions son las direcciones a las que se puede
 //mover el player.
 var PlayerState = {'JUMP':0, 'RUN':1, 'FALLING':2, 'STOP':3}
@@ -21,40 +23,6 @@ var PlayScene = {
 	_alreadyJump: false, //Booleano que nos permite ver si ya se ha realizado el primer salto.
 	_jetPackText: '100 %',
 
-//CODIGO DE ENEMIGOS
-  //_enemigoMoveDir: false,//variables de los enemigos para cambiar su dirección...
-  //  _enemies: {},
-//---------------------------------------------------------------------------------
-
-//No se hacerlo de estar forma, me da error por la herencia (prototypes)
-
-  /*//El pool de los enemigos...
-   Pool: function(game, entities) {
-     this._group = game.add.group();
-     this._group.addMultile(entities);
-     this._group.callAll('kill');
-  },
-  //Spawnea una nueva entidad enemigo del propio pool.
-   spawn: function(x, y) {
-    var entity = this._group.getFirstExists(false);
-    if (entity) {
-      entity.reset(x, y);
-    }
-    return entity;
-  },
- Zombies: function(game) {//No se si va aquí o fuera...
-    Phaser.Sprite.call(this, game, 0, 0, 'zombie');
- },
- Zombies.prototype = Object.create(Phaser.Sprite.prototype);
- Zombies.constructor = Zombies;
-
- Zombies.prototype.update: function (){
-  if(this.x >= this.game.world.weight/2 || this.x <= 0 ) _enemigoMoveDir = true;//Creo que está mal...
-  else _enemigoMoveDir = false;
-
-  if(_enemigoMoveDir) this.x += 2;
-  else this.x -= 2;
-},*/
 
 //--------------------------------------------------------------------------------
 
@@ -145,12 +113,12 @@ var PlayScene = {
         var moveDirection = new Phaser.Point(0, 0);
         var collisionWithTilemap = this.game.physics.arcade.collide(this._rush, this.groundLayer);
         var movement = this.GetMovement();
-		
+
 	/*
 		this._rush.powerBar.crop.width = ((this._jetPack / this._jetPackPower) * this._rush.powerBar.width);
 		//this._rush.powerBar.updateCrop();
 		console.log(this._rush.powerBar.crop.width);*/
-		
+
         //transitions
         switch(this._playerState)
         {
@@ -255,7 +223,7 @@ var PlayScene = {
                       this.backgroundLayer.layer.widthInPixels*this.backgroundLayer.scale.x - 10);
         this.checkPlayerFell();
 		this.jetPackPower();
-		
+
 
         //this.onCollisonEnemy();
     },
@@ -316,10 +284,6 @@ var PlayScene = {
         this.game.physics.arcade.enable(this._rush);
 
 
-//CODIGO DE ENEMIGOS
-        /*this._enemies = this.game.add.group();
-        this._enemies = game.add.physicsGroup();*/
-
         this._rush.body.bounce.y = 0.2;
         this._rush.body.gravity.y = 20000;
         this._rush.body.gravity.x = 0;
@@ -344,24 +308,24 @@ var PlayScene = {
 		this.tilesPared.destroy();
         this.game.world.setBounds(0,0,800,600);
     },
-	
+
 	jetPackPower : function(){
 		var power = ((this._jetPack / this._jetPackPower) * 100);
 		this._jetPackText.text = Math.round(power) + ' %';
-		
+
 			 if(power > 50)
 				this._jetPackText.fill = '#002AFA';
-				
+
 			if(power <= 50 && power > 30)
 				this._jetPackText.fill = '#F2FA00';
 			if(power <=30)
 				this._jetPackText.fill = '#FA0000';
-				
 
-                        
+
+
 	},
-	
-	
+
+
 
 	doubleJump: function(){
 
@@ -375,7 +339,7 @@ var PlayScene = {
 	}
 
 //CODIGO DE ENEMIGOS
-  /*onCollisonEnemy: function() {//De momento está puesto para que si toca al enemigo en cualquier lado se muera
+  /*onCollisonEnemy: function() {
 
     if(this.game.physics.arcade.collide(this._rush, this._enemies));
       this.onPlayerDie();

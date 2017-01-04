@@ -12,8 +12,7 @@ var GameOver = {
         goText.anchor.set(0.5);
         button.addChild(text);
         
-        //TODO 8 crear un boton con el texto 'Return Main Menu' que nos devuelva al menu del juego.
-
+        
         var buttonMenu = this.game.add.button(250, 300, 
                                           'button', 
                                           this.menuOnClick, 

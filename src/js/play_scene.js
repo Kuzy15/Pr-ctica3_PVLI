@@ -1,7 +1,7 @@
 'use strict';
 
-var Pool = require('./Pool');
-var Enemy = require('./Enemy');
+//var Pool = require('./Pool');
+//var Enemy = require('./Enemy'); 
 //Enumerados: PlayerState son los estado por los que pasa el player. Directions son las direcciones a las que se puede
 //mover el player.
 var PlayerState = {'JUMP':0, 'RUN':1, 'FALLING':2, 'STOP':3}
@@ -22,6 +22,10 @@ var PlayScene = {
 	_doubleJump: false,	//Booleano que nos permite ver si ya se ha realizado el doble salto.
 	_alreadyJump: false, //Booleano que nos permite ver si ya se ha realizado el primer salto.
 	_jetPackText: '100 %',
+	_pause: false,
+	_continueButton: {},
+	_buttonMenu: {},
+	
 
 
 //--------------------------------------------------------------------------------
@@ -80,7 +84,8 @@ var PlayScene = {
       this.groundLayer.setScale(3,3);
       this.backgroundLayer.setScale(3,3);
       this.death.setScale(3,3);
-
+	 
+	   
       //this.groundLayer.resizeWorld(); //resize world and adjust to the screen
 
       //nombre de la animación, frames, framerate, isloop
@@ -108,12 +113,14 @@ var PlayScene = {
           this.var.update();
         }*/
 
-
-
+		this.checkPause();
+		//Durante el estado de pausa no tenemos que checkear al jugador.
+		//Cuando implementemos los enemigso, hay que meter su update dentro de este if para que no se actualicen.
+		if (this._pause === false){
         var moveDirection = new Phaser.Point(0, 0);
         var collisionWithTilemap = this.game.physics.arcade.collide(this._rush, this.groundLayer);
         var movement = this.GetMovement();
-
+		
 	/*
 		this._rush.powerBar.crop.width = ((this._jetPack / this._jetPackPower) * this._rush.powerBar.width);
 		//this._rush.powerBar.updateCrop();
@@ -128,12 +135,12 @@ var PlayScene = {
                     this._playerState = PlayerState.JUMP;
 					//this._alreadyJump = true;
                     this._initialJumpHeight = this._rush.y;
-                    this._rush.animations.play('jump');
+                    //this._rush.animations.play('jump');
                 }
                 else{
                     if(movement !== Direction.NONE){
                         this._playerState = PlayerState.RUN;
-                        this._rush.animations.play('run');
+                        //this._rush.animations.play('run');
                     }
                     else{
                         this._playerState = PlayerState.STOP;
@@ -163,11 +170,11 @@ var PlayScene = {
 					this._alreadyJump = false;
                     if(movement !== Direction.NONE){
                         this._playerState = PlayerState.RUN;
-                        this._rush.animations.play('run');
+                        //this._rush.animations.play('run');
                     }
                     else{
                         this._playerState = PlayerState.STOP;
-                        this._rush.animations.play('stop');
+                       // this._rush.animations.play('stop');
                     }
                 }
 				else if (this.doubleJump()){
@@ -208,22 +215,19 @@ var PlayScene = {
 				}
                 if(this._playerState === PlayerState.FALLING){
                     moveDirection.y = 0;
-					/*
-						if (this.doubleJump()){
-						this._playerState = PlayerState.JUMP;
-						this._alreadyJump = true;
-						console.log('entra');
-
-						}*/
+					
 				}
                 break;
         }
         //movement
+		
         this.movement(moveDirection,5,
                       this.backgroundLayer.layer.widthInPixels*this.backgroundLayer.scale.x - 10);
         this.checkPlayerFell();
 		this.jetPackPower();
-
+		}
+		
+		
 
         //this.onCollisonEnemy();
     },
@@ -324,7 +328,76 @@ var PlayScene = {
 
 
 	},
+	
+	checkPause : function () {
+		
+		if(this.game.input.keyboard.downDuration(Phaser.Keyboard.P,10)){
+           // Si el juego no esta pausado, lo ponemos en pause y mostramos los botones.
+			if (this._pause === false){
+				//console.log("pause");
+				this._pause = true;
+				this._rush.body.bounce.y = 0;
+				this._rush.body.allowGravity = false;
+				this._rush.body.velocity.y = 0;
+				this._rush.body.velocity.x = 0;
+				
+				
+				//Añadir los botones y esas cosas.
+				var x,y;
+				x = this.game.camera.x + (this.camera.width / 2);
+				y = this.game.camera.y + (this.camera.height / 2);
+				this._continueButton = this.game.add.button(x , (y - this.game.camera.height/5), 
+                                          'button', 
+                                          this.continueOnClick, 
+                                          this, 2, 1, 0);
+				this._continueButton.anchor.set(0.5);
+				
+				var text = this.game.add.text(0, 0, "Continue");
+				text.anchor.set(0.5);
+				 
+				this._continueButton.addChild(text);
+				
+				
+				this._buttonMenu = this.game.add.button(x, (y + this.game.camera.height/5), 
+												  'button', 
+												  this.exitOnClick, 
+												  this, 2, 1, 0);
+				this._buttonMenu.anchor.set(0.5);
+				var textMenu = this.game.add.text(0, 0, "Main Menu");
+				textMenu.anchor.set(0.5);
+				this._buttonMenu.addChild(textMenu); 
+				
+				this._continueButton.visible = true;
+				this._buttonMenu.visible = true;
+				this._continueButton.inputEnable = true;
+				this._buttonMenu.inputEnable = true;
+			}
+			
+			else {
+				this.continueOnClick();
+			}
+        }	
+	},
+	
+	continueOnClick: function (){
+		//Mostramos los botones y reseteamos el juego.
+		this._pause = false;
+		console.log(this._pause);
+		this._continueButton.visible = false;
+		this._buttonMenu.visible = false;
+		this._continueButton.inputEnable = false;
+		this._buttonMenu.inputEnable = false;
+		
+		this._rush.body.bounce.y = 0.2;
+		this._rush.body.allowGravity = true;
+		this._rush.body.gravity.y = 20000;
+	},
 
+	exitOnClick: function (){
+		
+		 this.game.state.start('menu');
+		
+	},
 
 
 	doubleJump: function(){

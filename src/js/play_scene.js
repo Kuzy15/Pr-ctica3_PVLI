@@ -1,7 +1,7 @@
 'use strict';
 
-//var Pool = require('./Pool');
-//var Enemy = require('./Enemy');
+var Pool = require('./Pool');
+var Enemy = require('./Enemy');
 //Enumerados: PlayerState son los estado por los que pasa el player. Directions son las direcciones a las que se puede
 //mover el player.
 var PlayerState = {'JUMP':0, 'RUN':1, 'FALLING':2, 'STOP':3}

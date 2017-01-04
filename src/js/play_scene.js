@@ -1,6 +1,6 @@
 'use strict';
 
-var Pool = require('./Pool');
+//var Pool = require('./Pool');
 var Enemy = require('./Enemy');
 //Enumerados: PlayerState son los estado por los que pasa el player. Directions son las direcciones a las que se puede
 //mover el player.
@@ -25,8 +25,9 @@ var PlayScene = {
 	  _pause: false,
 	  _continueButton: {},
 	  _buttonMenu: {},
+    _enemies: {},//[]
     _pool: {},
-    _zombies: [],
+
 
 
 
@@ -36,19 +37,6 @@ var PlayScene = {
 
     //Método constructor...
   create: function () {
-
-
-
-//CODIGO DE ENEMIGOS
-          for (var i = 0; i < 5; i++) {
-              this._zombies.push(new Enemy(this.game, 'zombie'));
-          }
-          this._zombies = this.game.add.physicsGroup();
-          this._pool = new Pool(this.game, this._zombies);
-
-          this._pool.spawn(this.game.rnd.between(200, 700), 3350);//Probando, solo creará un zombie.
-
-
 
       //this._rush = this.game.add.sprite(30,1350, 'rush');
 
@@ -97,6 +85,37 @@ var PlayScene = {
       this._rush.animations.add('jump',
                      Phaser.Animation.generateFrameNames('rush_jump',2,2,'',2),0,false);
       this.configure();
+
+//CODIGO DE ENEMIGOS  ----------------------------------------------------------------------
+
+//Opción 1: Con el Pool
+                /*
+
+                for (var i = 0; i < 2; i++) {
+                    this._enemies.push(new Enemy(this.game, 'zombie'));
+                }
+
+                this._pool = new Pool(this.game, this._enemies);
+
+                this._pool.spawn(this.game.rnd.between(200, 700), 3350);//Probando, solo creará un zombie.
+
+*/
+
+//Opción 2: Sin el Pool
+                this._enemies = this.game.add.group();
+                this._enemies = this.game.add.physicsGroup(Phaser.Physics.ARCADE);
+
+
+                for (var i = 0; i < 1; i++) {
+
+                  var enemy = new Enemy(this.game, 'zombie', this.game.rnd.between(500, 700), 3350);
+                  enemy.anchor.setTo(0.5, 0.5);
+                  this._enemies.add(enemy);
+                }
+
+                this._enemies.setAll('body.collideWorldBounds', true);
+
+//------------------------------------------------------------------------------------------------------------------
   },
 
     //IS called one per frame.
@@ -114,6 +133,8 @@ var PlayScene = {
         var moveDirection = new Phaser.Point(0, 0);
         var collisionWithTilemap = this.game.physics.arcade.collide(this._rush, this.groundLayer);
         var movement = this.GetMovement();
+
+        //var enemyStanding = this.game.physics.arcade.collide(this._enemies, this.groundLayer);
 
 
 
@@ -222,7 +243,7 @@ var PlayScene = {
                       this.backgroundLayer.layer.widthInPixels*this.backgroundLayer.scale.x - 10);
         this.checkPlayerFell();
 		    this.jetPackPower();
-        //this.onCollisonEnemy();
+        this.onCollisonEnemy();
 		}
 
 
@@ -271,7 +292,7 @@ var PlayScene = {
     configure: function(){
         //Start the Arcade Physics systems
         //this.game.world.setBounds(0, 0, 2400, 160);
-		this.game.world.setBounds(0, 0, 2200, 7550);
+		    this.game.world.setBounds(0, 0, 2200, 7550);
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
         this.game.stage.backgroundColor = '#a9f0ff';
         this.game.physics.arcade.enable(this._rush);
@@ -401,10 +422,13 @@ var PlayScene = {
 	},
 
   //CODIGO DE ENEMIGOS
-    onCollisonEnemy: function() {
+    onCollisonEnemy: function(collisionWithEnemy) {
 
-      if(this.game.physics.arcade.collide(this._rush, this._zombies));
+      if(this.game.physics.arcade.collide(this._rush, this._enemies)){
         this.onPlayerDie();
+        console.log("fuuuuck");
+      }
+
     }
 };
 

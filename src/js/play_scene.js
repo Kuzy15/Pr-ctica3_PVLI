@@ -392,7 +392,7 @@ var PlayScene = {
 					return true;
 				}
 		return false;
-	}
+	},
 
   //CODIGO DE ENEMIGOS
     onCollisonEnemy: function() {

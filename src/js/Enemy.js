@@ -2,16 +2,17 @@
 
 
 
-_enemigoMoveDir: false,//variables de los enemigos para cambiar su dirección...
 
 
- function Zombies (game) {
+
+ function Enemy (game) {
   Phaser.Sprite.call(this, game, 0, 0, 'zombie');
 }
-Zombies.prototype = Object.create(Phaser.Sprite.prototype);
-Zombies.constructor = Zombies;
+Enemy.prototype = Object.create(Phaser.Sprite.prototype);
+Enemy.constructor = Enemy;
 
-/*Zombies.prototype.update = function (){//De momento el movimiento es muy kk, ya lo cambiare (para que sigan al pj)
+/*Enemy.prototype.update = function (){//De momento el movimiento es muy kk, ya lo cambiare (para que sigan al pj)
+_enemigoMoveDir: false,//variables de los enemigos para cambiar su dirección...
 if(this.x >= this.game.world.weight/2 || this.x <= 0 ) _enemigoMoveDir = true;//Creo que está mal...
 else _enemigoMoveDir = false;
 

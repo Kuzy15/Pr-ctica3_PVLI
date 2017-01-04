@@ -15,18 +15,20 @@ var PlayScene = {
     _speed: 300, //velocidad del player
     _jumpSpeed: 600, //velocidad de salto
     _jumpHight: 60, //altura máxima del salto.
-	_jetPackPower: 700,
-	_jetPack: 700,
+	  _jetPackPower: 700,
+	  _jetPack: 700,
     _playerState: PlayerState.STOP, //estado del player
     _direction: Direction.NONE,  //dirección inicial del player. NONE es ninguna dirección.
-	_doubleJump: false,	//Booleano que nos permite ver si ya se ha realizado el doble salto.
-	_alreadyJump: false, //Booleano que nos permite ver si ya se ha realizado el primer salto.
-	_jetPackText: '100 %',
-	_pause: false,
-	_continueButton: {},
-	_buttonMenu: {},
-  _pool: {},
-  _zombies: [],
+	  _doubleJump: false,	//Booleano que nos permite ver si ya se ha realizado el doble salto.
+	  _alreadyJump: false, //Booleano que nos permite ver si ya se ha realizado el primer salto.
+	  _jetPackText: '100 %',
+	  _pause: false,
+	  _continueButton: {},
+	  _buttonMenu: {},
+    _pool: {},
+    _zombies: [],
+
+
 
 
 
@@ -39,11 +41,12 @@ var PlayScene = {
 
 //CODIGO DE ENEMIGOS
           for (var i = 0; i < 5; i++) {
-              this._zombies.push(new Enemy(this.game));
+              this._zombies.push(new Enemy(this.game, 'zombie'));
           }
+          this._zombies = this.game.add.physicsGroup();
           this._pool = new Pool(this.game, this._zombies);
 
-            this._pool.spawn(80,3350);//Probando, solo creará un zombie.
+          this._pool.spawn(this.game.rnd.between(200, 700), 3350);//Probando, solo creará un zombie.
 
 
 
@@ -111,6 +114,9 @@ var PlayScene = {
         var moveDirection = new Phaser.Point(0, 0);
         var collisionWithTilemap = this.game.physics.arcade.collide(this._rush, this.groundLayer);
         var movement = this.GetMovement();
+
+
+
 
 	/*
 		this._rush.powerBar.crop.width = ((this._jetPack / this._jetPackPower) * this._rush.powerBar.width);
@@ -216,7 +222,7 @@ var PlayScene = {
                       this.backgroundLayer.layer.widthInPixels*this.backgroundLayer.scale.x - 10);
         this.checkPlayerFell();
 		    this.jetPackPower();
-        this.onCollisonEnemy();
+        //this.onCollisonEnemy();
 		}
 
 

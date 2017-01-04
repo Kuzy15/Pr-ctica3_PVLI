@@ -6,7 +6,7 @@
 function Pool (game, entities) {
   this._group = game.add.group();
   this._group.addMultiple(entities);
-  this._group = game.add.physicsGroup();
+  //this._group = game.add.physicsGroup();
   this._group.callAll('kill');//Al principio todas las entidades están desactivadas
 }
 //Spawnea una nueva entidad enemigo del propio pool.

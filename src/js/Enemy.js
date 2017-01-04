@@ -5,8 +5,8 @@
 
 
 
- function Enemy (game) {
-  Phaser.Sprite.call(this, game, 0, 0, 'zombie');
+ function Enemy (game, image) {
+  Phaser.Sprite.call(this, game, 0, 0, image);
 }
 Enemy.prototype = Object.create(Phaser.Sprite.prototype);
 Enemy.constructor = Enemy;

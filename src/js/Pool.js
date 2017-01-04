@@ -11,8 +11,8 @@ function Pool (game, entities) {
 }
 //Spawnea una nueva entidad enemigo del propio pool.
  Pool.prototype.spawn = function(x, y) {
- var entity = this._group.getFirstExists(false);
- if (entity) {
+ var entity = this._group.getFirstExists(false);//Busca en el pool la 1ª entidad muerta
+ if (entity) {//Si ha encontrado una entidad muerta...
    entity.reset(x, y);
  }
  return entity;

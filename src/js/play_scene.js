@@ -37,6 +37,9 @@ var PlayScene = {
 	_pausex:0,
 	_pauseY:0,
 	_winTrigger:{},
+  _rushX: null,
+  _thisGame: null,
+  _thisRushX: null,
 
 
 
@@ -166,6 +169,9 @@ var PlayScene = {
 
 
                 //this._enemies.setAll('body.collideWorldBounds', true);
+
+
+                // HAY QUE CREAR TRIGGERS PARA EL SPAWN DE ZOMBIES
 
 //------------------------------------------------------------------------------------------------------------------
   },
@@ -304,6 +310,19 @@ var PlayScene = {
         this.onCollisionEnemy();
 		this.checkPlayerWin();
 
+    this._rushX = this._rush.x;
+    //console.log(this._rushX );
+
+
+    this._enemies.forEach(function (zombie){
+            zombie.update(this.game, this._rushX);
+        },this);
+
+
+
+
+    // CUANDO SE COLISIONE CON LOS TRIGGER SE LLAMA A SPAWNENEMIES()
+
 		}
 
 
@@ -326,12 +345,12 @@ var PlayScene = {
         if(this.game.physics.arcade.collide(this._rush, this.death))
             this.onPlayerDie();
     },
-	
+
 	checkPlayerWin: function(){
-		
+
 		if(this.game.physics.arcade.collide(this._rush, this._winTrigger))
             this.onPlayerDie();
-		
+
 	},
 
     isStanding: function(){
@@ -365,7 +384,7 @@ var PlayScene = {
         this.game.physics.arcade.enable(this._rush);
 		this.game.physics.arcade.enable(this._winTrigger);
 
-
+        this._rush.anchor.setTo(0.5, 0.5);
         this._rush.body.bounce.y = 0.2;
         this._rush.body.gravity.y = 20000;
         this._rush.body.gravity.x = 0;
@@ -499,6 +518,7 @@ var PlayScene = {
 
     spawnEnemies: function() {
 
+// CAMBIAR PARA QUE SPAWNEEN EN UNA POS PREDETERMINADA CERCA DEL TRIGGER CORRESPONDIENTE
 
       /*var current_time = this.game.time;
       if(current_time - this._last_spawn_time > this._time_til_spawn){

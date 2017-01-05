@@ -36,6 +36,7 @@ var PlayScene = {
 	_pauseScreen:{},
 	_pausex:0,
 	_pauseY:0,
+	_winTrigger:{},
 
 
 
@@ -71,6 +72,8 @@ var PlayScene = {
 	  this._pauseScreen.alpha = 0.8;
 	  this._pauseScreen.x = this.game.camera.x;
 	  this._pauseScreen.y = this.game.camera.y;
+	  this._winTrigger = this.add.sprite(70, 680,'winTrigger');
+	  this._winTrigger.alpha = 0;
 	  //--------------------------------------------------------------------
 	  /*this._rush.powerBar = this.game.add.sprite(0,0,'powerbar'); No consigo implementar la barra de vida. voy a hacerlo con texto.
 	  //this._rush.powerBar.cropEnabled = true;
@@ -297,8 +300,9 @@ var PlayScene = {
         this.movement(moveDirection,5,
                       this.backgroundLayer.layer.widthInPixels*this.backgroundLayer.scale.x - 10);
         this.checkPlayerFell();
-		    this.jetPackPower();
+		this.jetPackPower();
         this.onCollisionEnemy();
+		this.checkPlayerWin();
 
 		}
 
@@ -322,6 +326,13 @@ var PlayScene = {
         if(this.game.physics.arcade.collide(this._rush, this.death))
             this.onPlayerDie();
     },
+	
+	checkPlayerWin: function(){
+		
+		if(this.game.physics.arcade.collide(this._rush, this._winTrigger))
+            this.onPlayerDie();
+		
+	},
 
     isStanding: function(){
         return this._rush.body.blocked.down || this._rush.body.touching.down
@@ -352,6 +363,7 @@ var PlayScene = {
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
         this.game.stage.backgroundColor = '#a9f0ff';
         this.game.physics.arcade.enable(this._rush);
+		this.game.physics.arcade.enable(this._winTrigger);
 
 
         this._rush.body.bounce.y = 0.2;
@@ -483,6 +495,7 @@ var PlayScene = {
       }
 
     },
+
 
     spawnEnemies: function() {
 

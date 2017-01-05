@@ -17,13 +17,12 @@
 Enemy.prototype = Object.create(Phaser.Sprite.prototype);
 Enemy.constructor = Enemy;
 
-/*Enemy.prototype.move = function (){//De momento el movimiento es muy kk, ya lo cambiare (para que sigan al pj)
-_enemigoMoveDir: false,//variables de los enemigos para cambiar su dirección...
-if(this.x >= this.game.world.weight/2 || this.x <= 0 ) _enemigoMoveDir = true;//Creo que está mal...
-else _enemigoMoveDir = false;
+/*Enemy.prototype.update = function (){//De momento el movimiento es muy kk, ya lo cambiare (para que sigan al pj)
 
-if(_enemigoMoveDir) this.x += 2;
-else this.x -= 2;
+
+  }
+
+
 }﻿*/
 
 module.exports = Enemy;

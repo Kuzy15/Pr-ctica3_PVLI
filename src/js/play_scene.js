@@ -26,7 +26,9 @@ var PlayScene = {
 	  _continueButton: {},
 	  _buttonMenu: {},
     _enemies: {},//[]
-    _pool: {},
+    //_pool: {},
+    _time_til_spawn: Math.random()*3000 + 2000,//Controla el tiempo de spawn
+    _last_spawn_time: 1000,
 
 
 
@@ -103,17 +105,14 @@ var PlayScene = {
 
 //Opción 2: Sin el Pool
                 this._enemies = this.game.add.group();
-                this._enemies = this.game.add.physicsGroup(Phaser.Physics.ARCADE);
-
-
-                for (var i = 0; i < 1; i++) {
+                //this._enemies = this.game.add.physicsGroup(Phaser.Physics.ARCADE);
 
                   var enemy = new Enemy(this.game, 'zombie', this.game.rnd.between(500, 700), 3350);
                   enemy.anchor.setTo(0.5, 0.5);
                   this._enemies.add(enemy);
-                }
 
-                this._enemies.setAll('body.collideWorldBounds', true);
+
+                //this._enemies.setAll('body.collideWorldBounds', true);
 
 //------------------------------------------------------------------------------------------------------------------
   },
@@ -243,7 +242,8 @@ var PlayScene = {
                       this.backgroundLayer.layer.widthInPixels*this.backgroundLayer.scale.x - 10);
         this.checkPlayerFell();
 		    this.jetPackPower();
-        this.onCollisonEnemy();
+        this.onCollisionEnemy();
+        this.spawnEnemies();
 		}
 
 
@@ -422,14 +422,28 @@ var PlayScene = {
 	},
 
   //CODIGO DE ENEMIGOS
-    onCollisonEnemy: function(collisionWithEnemy) {
+    onCollisionEnemy: function() {
 
       if(this.game.physics.arcade.collide(this._rush, this._enemies)){
-        this.onPlayerDie();
+        //this.onPlayerDie();
         console.log("fuuuuck");
       }
 
+    },
+
+    spawnEnemies: function() {
+
+
+      var current_time = this.game.time;
+      if(current_time - this._last_spawn_time > this._time_til_spawn){
+
+        this._last_spawn_time = current_time;
+        /*var enemy = new Enemy(this.game, 'zombie', this.game.rnd.between(500, 700), 3350);
+        enemy.anchor.setTo(0.5, 0.5);
+        this._enemies.add(enemy);*/
+        console.log("spawn motherfuckeeeeeeer");
     }
+  }
 };
 
 module.exports = PlayScene;

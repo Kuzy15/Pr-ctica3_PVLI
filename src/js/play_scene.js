@@ -27,8 +27,11 @@ var PlayScene = {
 	  _buttonMenu: {},
     _enemies: {},//[]
     //_pool: {},
-    _time_til_spawn: Math.random()*3000 + 2000,//Controla el tiempo de spawn
-    _last_spawn_time: 1000,
+    //_time_til_spawn: Math.random()*3000 + 2000,//Controla el tiempo de spawn
+    //_last_spawn_time: 1000,
+    _timer: null,
+    _spawn_time: Math.random() * (15000-10000) + 10000,//(15s, 10s] Este tiempo hay que hacer que dependa de la velocidad del personaje
+    //o del tiempo que queda para que acabe la partida si lo hacemos contrarreloj.
 	_dashPower: 1000,
 	_pauseScreen:{},
 	_pausex:0,
@@ -45,6 +48,13 @@ var PlayScene = {
   create: function () {
 
       //this._rush = this.game.add.sprite(30,1350, 'rush');
+
+      //------------------------------------------------
+      //-----------TIMER--------------------------------
+      this._timer = this.game.time.create(false);
+      this._timer.loop(this._spawn_time, this.spawnEnemies, this);
+      this._timer.start();
+      //------------------------------------------------
 
       this.map = this.game.add.tilemap('tilemap');
       this.map.addTilesetImage('patrones','tiles');
@@ -82,15 +92,15 @@ var PlayScene = {
 	  //this.backgroundLayer.visible = false;
       //Cambia la escala a x3.
       this.groundLayer.setScale(3,3);
-      this.backgroundLayer.setScale(3,3); 
+      this.backgroundLayer.setScale(3,3);
       this.death.setScale(3,3);
-	  
+
 	  //Añadir los botones de pause.
-				
+
 		this._pauseX = this.game.camera.x + (this.camera.width / 3);
 		this._pauseY = this.game.camera.y - (this.camera.height / 2);
 		this._continueButton = this.game.add.button(0 , 0,
-								  'button', 
+								  'button',
 								  this.continueOnClick,
 								  this, 2, 1, 0);
 		this._continueButton.anchor.set(0.5);
@@ -113,7 +123,7 @@ var PlayScene = {
 		this._buttonMenu.visible = false;
 		this._continueButton.inputEnable = false;
 		this._buttonMenu.inputEnable = false;
-				
+
 		//this.game.camera.addChild(this._continueButton);
 		//this.game.camera.addChild(this._buttonMenu);
 
@@ -249,7 +259,7 @@ var PlayScene = {
             case PlayerState.JUMP:
             case PlayerState.RUN:
             case PlayerState.FALLING:
-				
+
                 if(movement === Direction.RIGHT){
                     moveDirection.x = this._speed;
                    /* if(this._rush.scale.x < 0)
@@ -267,13 +277,13 @@ var PlayScene = {
 
 						}
 						else {
-							
+
 							moveDirection.y = -this._jumpSpeed;
 							if (this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN) && this._jetPack < this._jetPackPower/2){
 									moveDirection.y = this._dashPower;
-									
-								} 
-						} 
+
+								}
+						}
 
 				}
                 if(this._playerState === PlayerState.FALLING){
@@ -289,7 +299,7 @@ var PlayScene = {
         this.checkPlayerFell();
 		    this.jetPackPower();
         this.onCollisionEnemy();
-        this.spawnEnemies();
+
 		}
 
 
@@ -396,8 +406,12 @@ var PlayScene = {
 				this._rush.body.allowGravity = false;
 				this._rush.body.velocity.y = 0;
 				this._rush.body.velocity.x = 0;
+        //-------------------TIMER--------------------------------------
+        this._timer.pause();
+        //--------------------------------------------------------------
 
-				
+
+
 				//Añadir los botones y esas cosas.
 				var x,y;
 				x = this.game.camera.x + (this.camera.width / 1.7);
@@ -406,7 +420,7 @@ var PlayScene = {
 				this._continueButton.y = (y + this.game.camera.height/6.6)
 
 
-				this._buttonMenu.x = x; 
+				this._buttonMenu.x = x;
 				this._buttonMenu.y = (y + this.game.camera.height/3);
 				this._continueButton.visible = true;
 				this._continueButton.alpha = 0;
@@ -416,7 +430,7 @@ var PlayScene = {
 				this._buttonMenu.inputEnable = true;
 				this._pauseScreen.visible = true;
 				this._pauseScreen.x = this.game.camera.x - 50;
-				this._pauseScreen.y = this.game.camera.y; 
+				this._pauseScreen.y = this.game.camera.y;
 			}
 
 			else {
@@ -436,6 +450,10 @@ var PlayScene = {
 		this._rush.body.bounce.y = 0.2;
 		this._rush.body.allowGravity = true;
 		this._rush.body.gravity.y = 20000;
+    //-----------------TIMER--------------------------------
+    this._timer.resume();
+    //------------------------------------------------------
+
 	},
 
 	exitOnClick: function (){
@@ -469,15 +487,18 @@ var PlayScene = {
     spawnEnemies: function() {
 
 
-      var current_time = this.game.time;
+      /*var current_time = this.game.time;
       if(current_time - this._last_spawn_time > this._time_til_spawn){
 
-        this._last_spawn_time = current_time;
-        /*var enemy = new Enemy(this.game, 'zombie', this.game.rnd.between(500, 700), 3350);
+        this._last_spawn_time = current_time;*/
+        var posRandX = (((Math.random() * (3 - 1) ) + 1) % 2 === 0) ? this.game.rnd.between(this._rush.x - 300, this._rush.x - 200) :
+                                                                        this.game.rnd.between(this._rush.x + 200, this._rush.x + 300);
+        var enemy = new Enemy(this.game, 'zombie', posRandX , 3350);//La  pos y tambien habria que cambiarla, sino se spawnearian
+        //solo en el suelo
         enemy.anchor.setTo(0.5, 0.5);
-        this._enemies.add(enemy);*/
+        this._enemies.add(enemy);
         console.log("spawn motherfuckeeeeeeer");
-    }
+    //}
   }
 };
 

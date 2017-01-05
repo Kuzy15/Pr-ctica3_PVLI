@@ -14,12 +14,12 @@ var BootScene = {
     // load here assets required for the loading screen
     this.game.load.image('preloader_bar', 'images/preloader_bar.png');
     this.game.load.spritesheet('button', 'images/buttons.png', 168, 70);
-    this.game.load.image('logo', 'images/phaser.png');
+    this.game.load.image('logo', 'images/main_menu.png');
   },
 
   create: function () {
     //this.game.state.start('preloader');
-      this.game.state.start('menu');
+      this.game.state.start('menu'); 
   }
 };
 

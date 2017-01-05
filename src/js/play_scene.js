@@ -29,6 +29,7 @@ var PlayScene = {
     //_pool: {},
     _time_til_spawn: Math.random()*3000 + 2000,//Controla el tiempo de spawn
     _last_spawn_time: 1000,
+	_dashPower: 1000,
 
 
 
@@ -209,6 +210,7 @@ var PlayScene = {
             case PlayerState.JUMP:
             case PlayerState.RUN:
             case PlayerState.FALLING:
+				
                 if(movement === Direction.RIGHT){
                     moveDirection.x = this._speed;
                    /* if(this._rush.scale.x < 0)
@@ -226,8 +228,13 @@ var PlayScene = {
 
 						}
 						else {
+							
 							moveDirection.y = -this._jumpSpeed;
-						}
+							if (this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN) && this._jetPack < this._jetPackPower/2){
+									moveDirection.y = this._dashPower;
+									
+								} 
+						} 
 
 				}
                 if(this._playerState === PlayerState.FALLING){

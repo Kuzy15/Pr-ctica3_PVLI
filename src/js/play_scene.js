@@ -30,6 +30,9 @@ var PlayScene = {
     _time_til_spawn: Math.random()*3000 + 2000,//Controla el tiempo de spawn
     _last_spawn_time: 1000,
 	_dashPower: 1000,
+	_pauseScreen:{},
+	_pausex:0,
+	_pauseY:0,
 
 
 
@@ -53,6 +56,11 @@ var PlayScene = {
       //plano de muerte
       this.death = this.map.createLayer('Death');
 	  this._rush = this.game.add.sprite(70,3350, 'rush');
+	  this._pauseScreen = this.add.sprite(70,3350,'pauseScreen');
+	  this._pauseScreen.scale.setTo(2.5,2.8);
+	  this._pauseScreen.alpha = 0.8;
+	  this._pauseScreen.x = this.game.camera.x;
+	  this._pauseScreen.y = this.game.camera.y;
 	  //--------------------------------------------------------------------
 	  /*this._rush.powerBar = this.game.add.sprite(0,0,'powerbar'); No consigo implementar la barra de vida. voy a hacerlo con texto.
 	  //this._rush.powerBar.cropEnabled = true;
@@ -74,9 +82,40 @@ var PlayScene = {
 	  //this.backgroundLayer.visible = false;
       //Cambia la escala a x3.
       this.groundLayer.setScale(3,3);
-      this.backgroundLayer.setScale(3,3);
+      this.backgroundLayer.setScale(3,3); 
       this.death.setScale(3,3);
+	  
+	  //Añadir los botones de pause.
+				
+		this._pauseX = this.game.camera.x + (this.camera.width / 3);
+		this._pauseY = this.game.camera.y - (this.camera.height / 2);
+		this._continueButton = this.game.add.button(0 , 0,
+								  'button', 
+								  this.continueOnClick,
+								  this, 2, 1, 0);
+		this._continueButton.anchor.set(0.5);
 
+		var text = this.game.add.text(0, 0, "Continue");
+		text.anchor.set(0.5);
+
+		this._continueButton.addChild(text);
+
+
+		this._buttonMenu = this.game.add.button(0, 0,
+										  'button',
+										  this.exitOnClick,
+										  this, 2, 1, 0);
+		this._buttonMenu.anchor.set(0.5);
+		var textMenu = this.game.add.text(0, 0, "Main Menu");
+		textMenu.anchor.set(0.5);
+		this._buttonMenu.addChild(textMenu);
+		this._continueButton.visible = false;
+		this._buttonMenu.visible = false;
+		this._continueButton.inputEnable = false;
+		this._buttonMenu.inputEnable = false;
+				
+		//this.game.camera.addChild(this._continueButton);
+		//this.game.camera.addChild(this._buttonMenu);
 
       //this.groundLayer.resizeWorld(); //resize world and adjust to the screen
 
@@ -351,43 +390,33 @@ var PlayScene = {
 		if(this.game.input.keyboard.downDuration(Phaser.Keyboard.P,10)){
            // Si el juego no esta pausado, lo ponemos en pause y mostramos los botones.
 			if (this._pause === false){
-				//console.log("pause");
+				console.log(this._buttonMenu);
 				this._pause = true;
 				this._rush.body.bounce.y = 0;
 				this._rush.body.allowGravity = false;
 				this._rush.body.velocity.y = 0;
 				this._rush.body.velocity.x = 0;
 
-
+				
 				//Añadir los botones y esas cosas.
 				var x,y;
-				x = this.game.camera.x + (this.camera.width / 2);
+				x = this.game.camera.x + (this.camera.width / 1.7);
 				y = this.game.camera.y + (this.camera.height / 2);
-				this._continueButton = this.game.add.button(x , (y - this.game.camera.height/5),
-                                          'button',
-                                          this.continueOnClick,
-                                          this, 2, 1, 0);
-				this._continueButton.anchor.set(0.5);
-
-				var text = this.game.add.text(0, 0, "Continue");
-				text.anchor.set(0.5);
-
-				this._continueButton.addChild(text);
+				this._continueButton.x = x;
+				this._continueButton.y = (y + this.game.camera.height/6.6)
 
 
-				this._buttonMenu = this.game.add.button(x, (y + this.game.camera.height/5),
-												  'button',
-												  this.exitOnClick,
-												  this, 2, 1, 0);
-				this._buttonMenu.anchor.set(0.5);
-				var textMenu = this.game.add.text(0, 0, "Main Menu");
-				textMenu.anchor.set(0.5);
-				this._buttonMenu.addChild(textMenu);
-
+				this._buttonMenu.x = x; 
+				this._buttonMenu.y = (y + this.game.camera.height/3);
 				this._continueButton.visible = true;
+				this._continueButton.alpha = 0;
 				this._buttonMenu.visible = true;
+				this._buttonMenu.alpha = 0;
 				this._continueButton.inputEnable = true;
 				this._buttonMenu.inputEnable = true;
+				this._pauseScreen.visible = true;
+				this._pauseScreen.x = this.game.camera.x - 50;
+				this._pauseScreen.y = this.game.camera.y; 
 			}
 
 			else {
@@ -402,8 +431,7 @@ var PlayScene = {
 		console.log(this._pause);
 		this._continueButton.visible = false;
 		this._buttonMenu.visible = false;
-		this._continueButton.inputEnable = false;
-		this._buttonMenu.inputEnable = false;
+		this._pauseScreen.visible = false;
 
 		this._rush.body.bounce.y = 0.2;
 		this._rush.body.allowGravity = true;
@@ -411,7 +439,7 @@ var PlayScene = {
 	},
 
 	exitOnClick: function (){
-
+		this._pause = false;
 		 this.game.state.start('menu');
 
 	},

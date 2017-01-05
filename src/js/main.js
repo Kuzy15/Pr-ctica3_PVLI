@@ -41,6 +41,7 @@ var PreloaderScene = {
       this.game.load.tilemap('tilemap', 'images/mapa.json', null, Phaser.Tilemap.TILED_JSON);
       this.game.load.atlas('rush', 'images/rush_spritesheet.png', 'images/rush_spritesheet.json', Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
 	  this.game.load.image('powerbar', 'images/RedBar.png');
+	  this.game.load.image('pauseScreen', 'images/pause_screen.png');
 
       this.game.load.image('zombie', 'images/Flag_Zombie_(Sprite).png');//de momento solo cargo una imagen, luego pondre animaciones.
 

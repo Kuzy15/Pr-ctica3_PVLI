@@ -14,7 +14,7 @@ var BootScene = {
     // load here assets required for the loading screen
     this.game.load.image('preloader_bar', 'images/preloader_bar.png');
     this.game.load.spritesheet('button', 'images/buttons.png', 168, 70);
-    this.game.load.image('logo', 'images/main_menu.png');
+    this.game.load.image('logo', 'images/FondoDef.png');
   },
 
   create: function () {

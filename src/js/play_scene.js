@@ -52,35 +52,37 @@ var PlayScene = {
     //Método constructor...
   create: function () {
 
-      //this._rush = this.game.add.sprite(30,1350, 'rush');
+    //this._rush = this.game.add.sprite(30,1350, 'rush');
+    //------------------------------------------------
+    //-----------TIMER--------------------------------
+    this._timer = this.game.time.create(false);
+    //this._timer.loop(this._spawn_time, this.spawnEnemies, this);
+    this._timer.start();
+    //------------------------------------------------
 
-      //------------------------------------------------
-      //-----------TIMER--------------------------------
-      this._timer = this.game.time.create(false);
-      //this._timer.loop(this._spawn_time, this.spawnEnemies, this);
-      this._timer.start();
-      //------------------------------------------------
-
-      this.map = this.game.add.tilemap('tilemap');
-      this.map.addTilesetImage('patrones','tiles');
-	  this.map.addTilesetImage('patrones2', 'tilesPared');
-	  this.map.addTilesetImage('patrones3', 'tilesFiccion');
-      //Creacion de las layers
-      this.backgroundLayer = this.map.createLayer('BackgroundLayer');
-      this.groundLayer = this.map.createLayer('Estructuras');
-      //plano de muerte
-      this.death = this.map.createLayer('Death');
-	  this._rush = this.game.add.sprite(70,3350, 'rush');
-	  this._pauseScreen = this.add.sprite(70,3350,'pauseScreen');
-	  this._pauseScreen.scale.setTo(2.5,2.8);
-	  this._pauseScreen.alpha = 0.8;
-	  this._pauseScreen.x = this.game.camera.x;
-	  this._pauseScreen.y = this.game.camera.y;
-	  this._winTrigger = this.add.sprite(70, 680,'winTrigger');
-	  this._winTrigger.alpha = 0;
+    this.map = this.game.add.tilemap('tilemap');
+    this.map.addTilesetImage('patrones','tiles');
+    this.map.addTilesetImage('patrones2', 'tilesPared');
+    this.map.addTilesetImage('patrones3', 'tilesFiccion');
+    //Creacion de las layers
+    this.backgroundLayer = this.map.createLayer('BackgroundLayer');
+    this.groundLayer = this.map.createLayer('Estructuras');
+    //plano de muerte
+    this.death = this.map.createLayer('Death');
+    this._rush = this.game.add.sprite(70,3350, 'rush');
+    this._pauseScreen = this.add.sprite(70,3350,'pauseScreen');
+    this._pauseScreen.scale.setTo(2.5,2.8);
+    this._pauseScreen.alpha = 0.8;
+    this._pauseScreen.x = this.game.camera.x;
+    this._pauseScreen.y = this.game.camera.y;
+    this._winTrigger = this.add.sprite(70, 680,'winTrigger');
+    this._winTrigger.alpha = 0;
 
     this._stopTrigger = this.game.add.group();
     this._stopTrigger = this.game.add.physicsGroup();
+    this._stopTrigger.enableBody = true;
+    this._stopTrigger.physicsBodyType = Phaser.Physics.ARCADE
+    //this._stopTrigger.setAll('enable.body', true);
     this._stopTrigger.create(950, 3350, 'stopTrigger');
     this._stopTrigger.create(1100, 3350, 'stopTrigger');
     this._stopTrigger.create(2008, 3093, 'stopTrigger');
@@ -95,7 +97,7 @@ var PlayScene = {
     this._stopTrigger.setAll('body.immovable', true);
     this._stopTrigger.setAll('anchor.x', 0.5);
     this._stopTrigger.setAll('anchor.y', 0.5);
-    //this._stopTrigger.setAll('alpha', 0);
+    this._stopTrigger.setAll('alpha', 0);
 	  //--------------------------------------------------------------------
 	  /*this._rush.powerBar = this.game.add.sprite(0,0,'powerbar'); No consigo implementar la barra de vida. voy a hacerlo con texto.
 	  //this._rush.powerBar.cropEnabled = true;
@@ -111,14 +113,14 @@ var PlayScene = {
 	  this._jetPackText.font = 'Sniglet';
 	  this._rush.addChild(this._jetPackText);
 	  this._jetPackText.scale.setTo(0.3,0.3);
-      //Colisiones con el plano de muerte y con suelo.
-      this.map.setCollisionBetween(1, 5000, true, 'Death');
-      this.map.setCollisionBetween(1, 5000, true, 'Estructuras');
+    //Colisiones con el plano de muerte y con suelo.
+    this.map.setCollisionBetween(1, 5000, true, 'Death');
+    this.map.setCollisionBetween(1, 5000, true, 'Estructuras');
 	  //this.backgroundLayer.visible = false;
-      //Cambia la escala a x3.
-      this.groundLayer.setScale(3,3);
-      this.backgroundLayer.setScale(3,3);
-      this.death.setScale(3,3);
+    //Cambia la escala a x3.
+    this.groundLayer.setScale(3,3);
+    this.backgroundLayer.setScale(3,3);
+    this.death.setScale(3,3);
 
 	  //Añadir los botones de pause.
 
@@ -152,45 +154,40 @@ var PlayScene = {
 		//this.game.camera.addChild(this._continueButton);
 		//this.game.camera.addChild(this._buttonMenu);
 
-      //this.groundLayer.resizeWorld(); //resize world and adjust to the screen
+    //this.groundLayer.resizeWorld(); //resize world and adjust to the screen
 
-      //nombre de la animación, frames, framerate, isloop
-      this._rush.animations.add('run',
-                    Phaser.Animation.generateFrameNames('rush_run',1,5,'',2),10,true);
-      this._rush.animations.add('stop',
-                    Phaser.Animation.generateFrameNames('rush_idle',1,1,'',2),0,false);
-      this._rush.animations.add('jump',
-                     Phaser.Animation.generateFrameNames('rush_jump',2,2,'',2),0,false);
-      this.configure();
+    //nombre de la animación, frames, framerate, isloop
+    this._rush.animations.add('run',
+                  Phaser.Animation.generateFrameNames('rush_run',1,5,'',2),10,true);
+    this._rush.animations.add('stop',
+                  Phaser.Animation.generateFrameNames('rush_idle',1,1,'',2),0,false);
+    this._rush.animations.add('jump',
+                   Phaser.Animation.generateFrameNames('rush_jump',2,2,'',2),0,false);
+    this.configure();
 
 //CODIGO DE ENEMIGOS  ----------------------------------------------------------------------
 
 //Opción 1: Con el Pool
-                /*
 
-                for (var i = 0; i < 2; i++) {
-                    this._enemies.push(new Enemy(this.game, 'zombie'));
-                }
+  /*
 
-                this._pool = new Pool(this.game, this._enemies);
+    for (var i = 0; i < 2; i++) {
+      this._enemies.push(new Enemy(this.game, 'zombie'));
+    }
 
-                this._pool.spawn(this.game.rnd.between(200, 700), 3350);//Probando, solo creará un zombie.
+    this._pool = new Pool(this.game, this._enemies);
+
+    this._pool.spawn(this.game.rnd.between(200, 700), 3350);//Probando, solo creará un zombie.
 
 */
 
 //Opción 2: Sin el Pool
-                this._enemies = this.game.add.group();
-                //this._enemies = this.game.add.physicsGroup(Phaser.Physics.ARCADE);
-
-
-                  var enemy = new Enemy(this.game, 'zombie', this.game.rnd.between(850 , 900), 3350);
-                  enemy.anchor.setTo(0.5, 0.5);
-                  this._enemies.add(enemy);
-
-
-
-                //this._enemies.setAll('body.collideWorldBounds', true);
-
+    this._enemies = this.game.add.group();
+    //this._enemies = this.game.add.physicsGroup(Phaser.Physics.ARCADE);
+    var enemy = new Enemy(this.game, 'zombie', this.game.rnd.between(850 , 900), 3350);
+    enemy.anchor.setTo(0.5, 0.5);
+    this._enemies.add(enemy);
+    //this._enemies.setAll('body.collideWorldBounds', true);
 
                 // HAY QUE CREAR TRIGGERS PARA EL SPAWN DE ZOMBIES
 
@@ -198,176 +195,156 @@ var PlayScene = {
   },
 
     //IS called one per frame.
-    update: function () {
-
-		//DEBUGS
+  update: function () {
+    //DEBUGS
 		//console.log('ea', this._jetPack);
 
 		//-----------------------------
 
 		this.checkPause();
-		//Durante el estado de pausa no tenemos que checkear al jugador.
-		//Cuando implementemos los enemigso, hay que meter su update dentro de este if para que no se actualicen.
+		    //Durante el estado de pausa no tenemos que checkear al jugador.
+		      //Cuando implementemos los enemigso, hay que meter su update dentro de este if para que no se actualicen.
 		if (this._pause === false){
         var moveDirection = new Phaser.Point(0, 0);
         var collisionWithTilemap = this.game.physics.arcade.collide(this._rush, this.groundLayer);
         var movement = this.GetMovement();
 
-        //var enemyStanding = this.game.physics.arcade.collide(this._enemies, this.groundLayer);
+        this.game.physics.arcade.collide(this._enemies, this.groundLayer);
 
 
 
 
 	/*
-		this._rush.powerBar.crop.width = ((this._jetPack / this._jetPackPower) * this._rush.powerBar.width);
-		//this._rush.powerBar.updateCrop();
-		console.log(this._rush.powerBar.crop.width);*/
+		    this._rush.powerBar.crop.width = ((this._jetPack / this._jetPackPower) * this._rush.powerBar.width);
+		    //this._rush.powerBar.updateCrop();
+		      console.log(this._rush.powerBar.crop.width);*/
 
         //transitions
-        switch(this._playerState)
-        {
-            case PlayerState.STOP:
-            case PlayerState.RUN:
-                if(this.isJumping(collisionWithTilemap)){
-                    this._playerState = PlayerState.JUMP;
-					//this._alreadyJump = true;
-                    this._initialJumpHeight = this._rush.y;
-                    //this._rush.animations.play('jump');
-                }
-                else{
-                    if(movement !== Direction.NONE){
-                        this._playerState = PlayerState.RUN;
-                        //this._rush.animations.play('run');
-                    }
-                    else{
-                        this._playerState = PlayerState.STOP;
-                        this._rush.animations.play('stop');
-                    }
-                }
-                break;
-
-            case PlayerState.JUMP:
-				if (!this.doubleJump()){
-                var currentJumpHeight = this._rush.y - this._initialJumpHeight;
-                this._playerState = (currentJumpHeight*currentJumpHeight < this._jumpHight*this._jumpHight)
-                    ? PlayerState.JUMP : PlayerState.FALLING;
-				this._alreadyJump = true;
-                break;
-				}
-				else {
-					if (this._jetPack <= 15)
-						this._playerState = PlayerState.FALLING;
-					else this._playerState = PlayerState.JUMP;
-				}
-
-            case PlayerState.FALLING:
-                if(this.isStanding()){
-					//this._doubleJump = false;
-					this._jetPack = this._jetPackPower;
-					this._alreadyJump = false;
-                    if(movement !== Direction.NONE){
-                        this._playerState = PlayerState.RUN;
-                        //this._rush.animations.play('run');
-                    }
-                    else{
-                        this._playerState = PlayerState.STOP;
-                       // this._rush.animations.play('stop');
-                    }
-                }
-				else if (this.doubleJump()){
-
-					this._playerState = PlayerState.JUMP;
-				}
-                break;
-        }
-        //States
         switch(this._playerState){
+          case PlayerState.STOP:
+          case PlayerState.RUN:
+          if(this.isJumping(collisionWithTilemap)){
+            this._playerState = PlayerState.JUMP;
+					   //this._alreadyJump = true;
+            this._initialJumpHeight = this._rush.y;
+            //this._rush.animations.play('jump');
+          }
+          else{
+            if(movement !== Direction.NONE){
+              this._playerState = PlayerState.RUN;
+              //this._rush.animations.play('run');
+            }else{
+              this._playerState = PlayerState.STOP;
+              this._rush.animations.play('stop');
+            }
+          }
+          break;
 
-            case PlayerState.STOP:
-                moveDirection.x = 0;
-                break;
-            case PlayerState.JUMP:
-            case PlayerState.RUN:
-            case PlayerState.FALLING:
+          case PlayerState.JUMP:
+          if (!this.doubleJump()){
+            var currentJumpHeight = this._rush.y - this._initialJumpHeight;
+            this._playerState = (currentJumpHeight*currentJumpHeight < this._jumpHight*this._jumpHight)
+                      ? PlayerState.JUMP : PlayerState.FALLING;
+            this._alreadyJump = true;
+            break;
+				  }
+          else {
+             if (this._jetPack <= 15)
+						       this._playerState = PlayerState.FALLING;
+             else this._playerState = PlayerState.JUMP;
+				  }
 
-                if(movement === Direction.RIGHT){
-                    moveDirection.x = this._speed;
+          case PlayerState.FALLING:
+          if(this.isStanding()){
+            //this._doubleJump = false;
+  				  this._jetPack = this._jetPackPower;
+				    this._alreadyJump = false;
+            if(movement !== Direction.NONE){
+              this._playerState = PlayerState.RUN;
+              //this._rush.animations.play('run');
+            }
+            else{
+              this._playerState = PlayerState.STOP;
+              //this._rush.animations.play('stop');
+            }
+          }
+          else if (this.doubleJump()){
+            this._playerState = PlayerState.JUMP;
+				  }
+          break;
+        }
+    //States
+        switch(this._playerState){
+          case PlayerState.STOP:
+          moveDirection.x = 0;
+          break;
+          case PlayerState.JUMP:
+          case PlayerState.RUN:
+          case PlayerState.FALLING:
+          if(movement === Direction.RIGHT){
+            moveDirection.x = this._speed;
                    /* if(this._rush.scale.x < 0)
                         this._rush.scale.x *= -1;*/
-                }
-                else if(movement === Direction.LEFT){
-                    moveDirection.x = -this._speed;
+          }
+          else if(movement === Direction.LEFT){
+            moveDirection.x = -this._speed;
                     /*if(this._rush.scale.x > 0)
                         this._rush.scale.x *= -1;*/
-                }
-                if(this._playerState === PlayerState.JUMP){
-
-						if (this._rush.body.blocked.up || this._rush.body.touching.up){
-							this._playerState = PlayerState.FALLING;
-
-						}
-						else {
-
-							moveDirection.y = -this._jumpSpeed;
-							if (this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN) && this._jetPack < this._jetPackPower/2){
-									moveDirection.y = this._dashPower;
-
-								}
-						}
-
-				}
-                if(this._playerState === PlayerState.FALLING){
-                    moveDirection.y = 0;
-
-				}
-                break;
+          }
+          if(this._playerState === PlayerState.JUMP){
+            if (this._rush.body.blocked.up || this._rush.body.touching.up){
+            this._playerState = PlayerState.FALLING;
+            }
+            else {
+              moveDirection.y = -this._jumpSpeed;
+						        if (this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN) && this._jetPack < this._jetPackPower/2){
+                      moveDirection.y = this._dashPower;
+                    }
+            }
+          }
+          if(this._playerState === PlayerState.FALLING){
+            moveDirection.y = 0;
+          }
+          break;
         }
-        //movement
 
+      //movement
         this.movement(moveDirection,5,
                       this.backgroundLayer.layer.widthInPixels*this.backgroundLayer.scale.x - 10);
         this.checkPlayerFell();
-		this.jetPackPower();
+		    this.jetPackPower();
         this.onCollisionEnemy();
-		this.checkPlayerWin();
-
-    this._rushX = this._rush.x;
-    this._rushY = this._rush.y;
-    //console.log(this._rushX );
-    //console.log(this._rushY );
-
-
-    this._enemies.forEach(function (zombie){
-            zombie.update(this.game, this._rushX, this._rushY, this._stopTrigger);
-        },this);
-
-
-
+		    this.checkPlayerWin();
+        this._rushX = this._rush.x;
+        this._rushY = this._rush.y;
+        //console.log(this._rushX );
+        //console.log(this._rushY );
+        if(!this.game.physics.arcade.collide(this._enemies, this._stopTrigger)){
+          this._enemies.forEach(function (zombie){
+            zombie.update(/*this.game,*/ this._rushX, this._rushY, this._stopTrigger);
+          },this);
+      }
 
     // CUANDO SE COLISIONE CON LOS TRIGGER SE LLAMA A SPAWNENEMIES()
 
 		}
+  },
 
 
+  canJump: function(collisionWithTilemap){
+      return this.isStanding() && collisionWithTilemap || this._jamping;
+  },
 
+  onPlayerDie: function(){
+      //TODO 6 Carga de 'gameOver';
+      this.game.state.start('gameOver');
 
-    },
+  },
 
-
-    canJump: function(collisionWithTilemap){
-        return this.isStanding() && collisionWithTilemap || this._jamping;
-    },
-
-    onPlayerDie: function(){
-        //TODO 6 Carga de 'gameOver';
-        this.game.state.start('gameOver');
-
-    },
-
-    checkPlayerFell: function(){
-        if(this.game.physics.arcade.collide(this._rush, this.death))
-            this.onPlayerDie();
-    },
+  checkPlayerFell: function(){
+      if(this.game.physics.arcade.collide(this._rush, this.death))
+          this.onPlayerDie();
+  },
 
 	checkPlayerWin: function(){
 
@@ -376,82 +353,77 @@ var PlayScene = {
 
 	},
 
-    isStanding: function(){
-        return this._rush.body.blocked.down || this._rush.body.touching.down
-    },
+  isStanding: function(){
+      return this._rush.body.blocked.down || this._rush.body.touching.down
+  },
 
-    isJumping: function(collisionWithTilemap){
-        return this.canJump(collisionWithTilemap) &&
-            this.game.input.keyboard.downDuration(Phaser.Keyboard.UP,5);
-    },
+  isJumping: function(collisionWithTilemap){
+      return this.canJump(collisionWithTilemap) &&
+          this.game.input.keyboard.downDuration(Phaser.Keyboard.UP,5);
+  },
 
-    GetMovement: function(){
-        var movement = Direction.NONE
-        //Move Right
-        if(this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)){
-            movement = Direction.RIGHT;
-        }
-        //Move Left
-        if(this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)){
-            movement = Direction.LEFT;
-        }
-        return movement;
-    },
-    //configure the scene
-    configure: function(){
-        //Start the Arcade Physics systems
-        //this.game.world.setBounds(0, 0, 2400, 160);
-		    this.game.world.setBounds(0, 0, 2200, 7550);
-        this.game.physics.startSystem(Phaser.Physics.ARCADE);
-        this.game.stage.backgroundColor = '#a9f0ff';
-        this.game.physics.arcade.enable(this._rush);
-		    this.game.physics.arcade.enable(this._winTrigger);
+  GetMovement: function(){
+      var movement = Direction.NONE
+      //Move Right
+      if(this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)){
+          movement = Direction.RIGHT;
+      }
+      //Move Left
+      if(this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)){
+          movement = Direction.LEFT;
+      }
+      return movement;
+  },
+  //configure the scene
+  configure: function(){
+      //Start the Arcade Physics systems
+      //this.game.world.setBounds(0, 0, 2400, 160);
+	    this.game.world.setBounds(0, 0, 2200, 7550);
+      this.game.physics.startSystem(Phaser.Physics.ARCADE);
+      this.game.stage.backgroundColor = '#a9f0ff';
+      this.game.physics.arcade.enable(this._rush);
+		  this.game.physics.arcade.enable(this._winTrigger);
+      this._rush.anchor.setTo(0.5, 0.5);
+      this._rush.body.bounce.y = 0.2;
+      this._rush.body.gravity.y = 20000;
+      this._rush.body.gravity.x = 0;
+      this._rush.body.velocity.x = 0;
+      this.game.camera.follow(this._rush);
+      this.game.camera.setSize(700,500)
+  },
+  //move the player
+  movement: function(point, xMin, xMax){
+      this._rush.body.velocity = point;// * this.game.time.elapseTime;
 
-        this._rush.anchor.setTo(0.5, 0.5);
-        this._rush.body.bounce.y = 0.2;
-        this._rush.body.gravity.y = 20000;
-        this._rush.body.gravity.x = 0;
-        this._rush.body.velocity.x = 0;
-        this.game.camera.follow(this._rush);
-        this.game.camera.setSize(700,500)
-    },
-    //move the player
-    movement: function(point, xMin, xMax){
-        this._rush.body.velocity = point;// * this.game.time.elapseTime;
+      if((this._rush.x < xMin && point.x < 0)|| (this._rush.x > xMax && point.x > 0))
+          this._rush.body.velocity.x = 0;
 
-        if((this._rush.x < xMin && point.x < 0)|| (this._rush.x > xMax && point.x > 0))
-            this._rush.body.velocity.x = 0;
+  },
 
-    },
-
-    //TODO 9 destruir los recursos tilemap, tiles y logo.
-    destroyResources: function(){
-        this.tilemap.destroy();
-        this.tiles.destroy();
+  //TODO 9 destruir los recursos tilemap, tiles y logo.
+  destroyResources: function(){
+    this.tilemap.destroy();
+    this.tiles.destroy();
 		this.tilesFiccion.destroy();
 		this.tilesPared.destroy();
-        this.game.world.setBounds(0,0,800,600);
-    },
+    this.game.world.setBounds(0,0,800,600);
+  },
 
 	jetPackPower : function(){
-		var power = ((this._jetPack / this._jetPackPower) * 100);
+    var power = ((this._jetPack / this._jetPackPower) * 100);
 		this._jetPackText.text = Math.round(power) + ' %';
+    if(power > 50)
+      this._jetPackText.fill = '#002AFA';
 
-			 if(power > 50)
-				this._jetPackText.fill = '#002AFA';
-
-			if(power <= 50 && power > 30)
-				this._jetPackText.fill = '#F2FA00';
-			if(power <=30)
-				this._jetPackText.fill = '#FA0000';
-
-
+    if(power <= 50 && power > 30)
+      this._jetPackText.fill = '#F2FA00';
+		if(power <=30)
+			this._jetPackText.fill = '#FA0000';
 
 	},
 
 	checkPause : function () {
-
-		if(this.game.input.keyboard.downDuration(Phaser.Keyboard.P,10)){
+    if(this.game.input.keyboard.downDuration(Phaser.Keyboard.P,10)){
            // Si el juego no esta pausado, lo ponemos en pause y mostramos los botones.
 			if (this._pause === false){
 				console.log(this._buttonMenu);
@@ -490,7 +462,7 @@ var PlayScene = {
 			else {
 				this.continueOnClick();
 			}
-        }
+    }
 	},
 
 	continueOnClick: function (){
@@ -511,35 +483,31 @@ var PlayScene = {
 	},
 
 	exitOnClick: function (){
-		this._pause = false;
-		 this.game.state.start('menu');
+    this._pause = false;
+		this.game.state.start('menu');
 
 	},
 
 
 	doubleJump: function(){
-
-		if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP) && /*!this._doubleJump*/ this._jetPack >= 15 && this._alreadyJump){
-					this._initialJumpHeight = this._rush.y;
-					//this._doubleJump = true;
-					this._jetPack -= 5;
-					return true;
-				}
-		return false;
+    if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP) && /*!this._doubleJump*/ this._jetPack >= 15 && this._alreadyJump){
+      this._initialJumpHeight = this._rush.y;
+			//this._doubleJump = true;
+			this._jetPack -= 5;
+			return true;
+		}
+    return false;
 	},
 
   //CODIGO DE ENEMIGOS
-    onCollisionEnemy: function() {
+  onCollisionEnemy: function() {
+    if(this.game.physics.arcade.collide(this._rush, this._enemies)){
+      //this.onPlayerDie();
+      console.log("fuuuuck");
+    }
+  },
 
-      if(this.game.physics.arcade.collide(this._rush, this._enemies)){
-        //this.onPlayerDie();
-        console.log("fuuuuck");
-      }
-
-    },
-
-
-    spawnEnemies: function() {
+  spawnEnemies: function() {
 
 // CAMBIAR PARA QUE SPAWNEEN EN UNA POS PREDETERMINADA CERCA DEL TRIGGER CORRESPONDIENTE
 

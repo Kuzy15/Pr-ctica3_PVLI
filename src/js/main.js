@@ -45,7 +45,7 @@ var PreloaderScene = {
 	  this.game.load.image('winTrigger', 'images/win_trigger.png');
     this.game.load.image('stopTrigger', 'images/stopTrigger.png');
 
-      this.game.load.image('zombie', 'images/Flag_Zombie_(Sprite).png');//de momento solo cargo una imagen, luego pondre animaciones.
+      this.game.load.image('zombie', 'images/zombiePrueba.png');//de momento solo cargo una imagen, luego pondre animaciones.
 
     this.load.onLoadComplete.add(this.loadComplete,this);
 

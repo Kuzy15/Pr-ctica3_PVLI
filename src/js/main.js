@@ -19,7 +19,7 @@ var BootScene = {
 
   create: function () {
     //this.game.state.start('preloader');
-      this.game.state.start('menu'); 
+      this.game.state.start('menu');
   }
 };
 
@@ -43,6 +43,7 @@ var PreloaderScene = {
 	  this.game.load.image('powerbar', 'images/RedBar.png');
 	  this.game.load.image('pauseScreen', 'images/pause_screen.png');
 	  this.game.load.image('winTrigger', 'images/win_trigger.png');
+    this.game.load.image('stopTrigger', 'images/stopTrigger.png');
 
       this.game.load.image('zombie', 'images/Flag_Zombie_(Sprite).png');//de momento solo cargo una imagen, luego pondre animaciones.
 

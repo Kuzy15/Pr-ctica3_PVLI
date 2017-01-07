@@ -30,16 +30,17 @@ var PlayScene = {
     //_time_til_spawn: Math.random()*3000 + 2000,//Controla el tiempo de spawn
     //_last_spawn_time: 1000,
     _timer: null,
-    _spawn_time: Math.random() * (15000-10000) + 10000,//(15s, 10s] Este tiempo hay que hacer que dependa de la velocidad del personaje
+    _spawn_time: Math.random() * (25000-20000) + 20000,//(15s, 10s] Este tiempo hay que hacer que dependa de la velocidad del personaje
     //o del tiempo que queda para que acabe la partida si lo hacemos contrarreloj.
 	_dashPower: 1000,
 	_pauseScreen:{},
-	_pausex:0,
-	_pauseY:0,
-	_winTrigger:{},
+	_pausex: 0,
+	_pauseY: 0,
+	_winTrigger: {},
   _rushX: null,
-  _thisGame: null,
-  _thisRushX: null,
+  _rushY: null,
+  _stopTrigger: {},
+
 
 
 
@@ -56,7 +57,7 @@ var PlayScene = {
       //------------------------------------------------
       //-----------TIMER--------------------------------
       this._timer = this.game.time.create(false);
-      this._timer.loop(this._spawn_time, this.spawnEnemies, this);
+      //this._timer.loop(this._spawn_time, this.spawnEnemies, this);
       this._timer.start();
       //------------------------------------------------
 
@@ -77,6 +78,24 @@ var PlayScene = {
 	  this._pauseScreen.y = this.game.camera.y;
 	  this._winTrigger = this.add.sprite(70, 680,'winTrigger');
 	  this._winTrigger.alpha = 0;
+
+    this._stopTrigger = this.game.add.group();
+    this._stopTrigger = this.game.add.physicsGroup();
+    this._stopTrigger.create(950, 3350, 'stopTrigger');
+    this._stopTrigger.create(1100, 3350, 'stopTrigger');
+    this._stopTrigger.create(2008, 3093, 'stopTrigger');
+    this._stopTrigger.create(767, 2709, 'stopTrigger');
+    this._stopTrigger.create(1586, 2853, 'stopTrigger');
+    this._stopTrigger.create(388, 2517, 'stopTrigger');
+    this._stopTrigger.create(2102, 2277, 'stopTrigger');
+    this._stopTrigger.create(1636, 1893, 'stopTrigger');
+    this._stopTrigger.create(1446, 1893, 'stopTrigger');
+    this._stopTrigger.create(341, 1557, 'stopTrigger');
+    this._stopTrigger.create(2065, 1557, 'stopTrigger');
+    this._stopTrigger.setAll('body.immovable', true);
+    this._stopTrigger.setAll('anchor.x', 0.5);
+    this._stopTrigger.setAll('anchor.y', 0.5);
+    //this._stopTrigger.setAll('alpha', 0);
 	  //--------------------------------------------------------------------
 	  /*this._rush.powerBar = this.game.add.sprite(0,0,'powerbar'); No consigo implementar la barra de vida. voy a hacerlo con texto.
 	  //this._rush.powerBar.cropEnabled = true;
@@ -163,9 +182,11 @@ var PlayScene = {
                 this._enemies = this.game.add.group();
                 //this._enemies = this.game.add.physicsGroup(Phaser.Physics.ARCADE);
 
-                  var enemy = new Enemy(this.game, 'zombie', this.game.rnd.between(500, 700), 3350);
+
+                  var enemy = new Enemy(this.game, 'zombie', this.game.rnd.between(850 , 900), 3350);
                   enemy.anchor.setTo(0.5, 0.5);
                   this._enemies.add(enemy);
+
 
 
                 //this._enemies.setAll('body.collideWorldBounds', true);
@@ -311,11 +332,13 @@ var PlayScene = {
 		this.checkPlayerWin();
 
     this._rushX = this._rush.x;
+    this._rushY = this._rush.y;
     //console.log(this._rushX );
+    //console.log(this._rushY );
 
 
     this._enemies.forEach(function (zombie){
-            zombie.update(this.game, this._rushX);
+            zombie.update(this.game, this._rushX, this._rushY, this._stopTrigger);
         },this);
 
 
@@ -382,7 +405,7 @@ var PlayScene = {
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
         this.game.stage.backgroundColor = '#a9f0ff';
         this.game.physics.arcade.enable(this._rush);
-		this.game.physics.arcade.enable(this._winTrigger);
+		    this.game.physics.arcade.enable(this._winTrigger);
 
         this._rush.anchor.setTo(0.5, 0.5);
         this._rush.body.bounce.y = 0.2;
@@ -390,7 +413,7 @@ var PlayScene = {
         this._rush.body.gravity.x = 0;
         this._rush.body.velocity.x = 0;
         this.game.camera.follow(this._rush);
-		this.game.camera.setSize(700,500)
+        this.game.camera.setSize(700,500)
     },
     //move the player
     movement: function(point, xMin, xMax){
@@ -526,7 +549,7 @@ var PlayScene = {
         this._last_spawn_time = current_time;*/
         var posRandX = (((Math.random() * (3 - 1) ) + 1) % 2 === 0) ? this.game.rnd.between(this._rush.x - 300, this._rush.x - 200) :
                                                                         this.game.rnd.between(this._rush.x + 200, this._rush.x + 300);
-        var enemy = new Enemy(this.game, 'zombie', posRandX , 3350);//La  pos y tambien habria que cambiarla, sino se spawnearian
+        var enemy = new Enemy(this.game, 'zombie', posRandX , 3093);//La  pos y tambien habria que cambiarla, sino se spawnearian
         //solo en el suelo
         enemy.anchor.setTo(0.5, 0.5);
         this._enemies.add(enemy);

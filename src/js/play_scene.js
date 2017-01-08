@@ -19,7 +19,7 @@ var PlayScene = {
 	  _jetPack: 700,
     _playerState: PlayerState.STOP, //estado del player
     _direction: Direction.NONE,  //dirección inicial del player. NONE es ninguna dirección.
-	  _doubleJump: false,	//Booleano que nos permite ver si ya se ha realizado el doble salto.
+	  _doubleJump: false,	//Booleano que nos permite ver si ya se ha realizado el doble salto. 
 	  _alreadyJump: false, //Booleano que nos permite ver si ya se ha realizado el primer salto.
 	  _jetPackText: '100 %',
 	  _pause: false,
@@ -70,7 +70,7 @@ var PlayScene = {
     //plano de muerte
     this.death = this.map.createLayer('Death');
     this._rush = this.game.add.sprite(500, 2000, 'rush', 1);
-    this._rush.scale.setTo(0.75, 0.75);
+    this._rush.scale.setTo(0.5, 0.5);
     this._pauseScreen = this.add.sprite(70,3350,'pauseScreen');
     this._pauseScreen.scale.setTo(2.5,2.8);
     this._pauseScreen.alpha = 0.8;
@@ -123,38 +123,7 @@ var PlayScene = {
     this.backgroundLayer.setScale(3,3);
     this.death.setScale(3,3);
 
-	  //Añadir los botones de pause.
-
-		this._pauseX = this.game.camera.x + (this.camera.width / 3);
-		this._pauseY = this.game.camera.y - (this.camera.height / 2);
-		this._continueButton = this.game.add.button(0 , 0,
-								  'button',
-								  this.continueOnClick,
-								  this, 2, 1, 0);
-		this._continueButton.anchor.set(0.5);
-
-		var text = this.game.add.text(0, 0, "Continue");
-		text.anchor.set(0.5);
-
-		this._continueButton.addChild(text);
-
-
-		this._buttonMenu = this.game.add.button(0, 0,
-										  'button',
-										  this.exitOnClick,
-										  this, 2, 1, 0);
-		this._buttonMenu.anchor.set(0.5);
-		var textMenu = this.game.add.text(0, 0, "Main Menu");
-		textMenu.anchor.set(0.5);
-		this._buttonMenu.addChild(textMenu);
-		this._continueButton.visible = false;
-		this._buttonMenu.visible = false;
-		this._continueButton.inputEnable = false;
-		this._buttonMenu.inputEnable = false;
-
-		//this.game.camera.addChild(this._continueButton);
-		//this.game.camera.addChild(this._buttonMenu);
-
+	  
     //this.groundLayer.resizeWorld(); //resize world and adjust to the screen
 
     //nombre de la animación, frames, framerate, isloop
@@ -209,6 +178,35 @@ var PlayScene = {
     this.spawnEnemies(1700, 1507);
     this.spawnEnemies(900, 1699);
 
+	//Añadir los botones de pause.
+
+	this._pauseX = this.game.camera.x + (this.camera.width / 3);
+	this._pauseY = this.game.camera.y - (this.camera.height / 2);
+	this._continueButton = this.game.add.button(0 , 0,
+							  'button',
+							  this.continueOnClick,
+							  this, 2, 1, 0);
+	this._continueButton.anchor.set(0.5);
+
+	var text = this.game.add.text(0, 0, "Continue");
+	text.anchor.set(0.5);
+
+	this._continueButton.addChild(text);
+
+
+	this._buttonMenu = this.game.add.button(0, 0,
+									  'button',
+									  this.exitOnClick,
+									  this, 2, 1, 0);
+	this._buttonMenu.anchor.set(0.5);
+	var textMenu = this.game.add.text(0, 0, "Main Menu");
+	textMenu.anchor.set(0.5);
+	this._buttonMenu.addChild(textMenu);
+	this._continueButton.visible = false;
+	this._buttonMenu.visible = false;
+	this._continueButton.inputEnable = false;
+	this._buttonMenu.inputEnable = false;
+
 
 
 
@@ -227,23 +225,13 @@ var PlayScene = {
 		//-----------------------------
 
 		this.checkPause();
-		    //Durante el estado de pausa no tenemos que checkear al jugador.
-		      //Cuando implementemos los enemigso, hay que meter su update dentro de este if para que no se actualicen.
+		this.game.physics.arcade.collide(this._enemies, this.groundLayer);
+		var collisionWithTilemap = this.game.physics.arcade.collide(this._rush, this.groundLayer);
 		if (this._pause === false){
         var moveDirection = new Phaser.Point(0, 0);
-        var collisionWithTilemap = this.game.physics.arcade.collide(this._rush, this.groundLayer);
         var movement = this.GetMovement();
 
-        this.game.physics.arcade.collide(this._enemies, this.groundLayer);
-
-
-
-
-	/*
-		    this._rush.powerBar.crop.width = ((this._jetPack / this._jetPackPower) * this._rush.powerBar.width);
-		    //this._rush.powerBar.updateCrop();
-		      console.log(this._rush.powerBar.crop.width);*/
-
+        
         //transitions
         switch(this._playerState){
           case PlayerState.STOP:
@@ -337,9 +325,9 @@ var PlayScene = {
         this.movement(moveDirection,5,
                       this.backgroundLayer.layer.widthInPixels*this.backgroundLayer.scale.x - 10);
         this.checkPlayerFell();
-		    this.jetPackPower();
+		this.jetPackPower();
         this.onCollisionEnemy();
-		    this.checkPlayerWin();
+		this.checkPlayerWin();
         this._rushX = this._rush.x;
         this._rushY = this._rush.y;
         console.log(this._rushX );
@@ -452,12 +440,12 @@ var PlayScene = {
     if(this.game.input.keyboard.downDuration(Phaser.Keyboard.P,10)){
            // Si el juego no esta pausado, lo ponemos en pause y mostramos los botones.
 			if (this._pause === false){
-				console.log(this._buttonMenu);
 				this._pause = true;
 				this._rush.body.bounce.y = 0;
 				this._rush.body.allowGravity = false;
 				this._rush.body.velocity.y = 0;
 				this._rush.body.velocity.x = 0;
+				this.stopEnemies();
         //-------------------TIMER--------------------------------------
         //this._timer.pause();
         //--------------------------------------------------------------
@@ -532,6 +520,15 @@ var PlayScene = {
       console.log("fuuuuck");
     }
   },
+  
+  stopEnemies: function() {
+	  
+	  this._enemies.forEach(function (zombie){
+            zombie.body.velocity.x = 0;
+          },this);
+	  
+	  
+  },
 
   spawnEnemies: function(x, y) {
 
@@ -545,7 +542,7 @@ var PlayScene = {
                                                                         //this.game.rnd.between(this._rush.x + 200, this._rush.x + 300);
         var enemy = new Enemy(this.game, 'zombie', 5, x, y);
         enemy.anchor.setTo(0.5, 0.5);
-        enemy.scale.setTo(1.25, 1.25);
+        enemy.scale.setTo(1, 1);
         this._enemies.add(enemy);
         //console.log("spawn motherfuckeeeeeeer");
     //}

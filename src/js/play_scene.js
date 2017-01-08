@@ -29,8 +29,8 @@ var PlayScene = {
     //_pool: {},
     //_time_til_spawn: Math.random()*3000 + 2000,//Controla el tiempo de spawn
     //_last_spawn_time: 1000,
-    _timer: null,
-    _spawn_time: Math.random() * (25000-20000) + 20000,//(15s, 10s] Este tiempo hay que hacer que dependa de la velocidad del personaje
+    //_timer: null,
+    //_spawn_time: Math.random() * (25000-20000) + 20000,//(15s, 10s] Este tiempo hay que hacer que dependa de la velocidad del personaje
     //o del tiempo que queda para que acabe la partida si lo hacemos contrarreloj.
 	_dashPower: 1000,
 	_pauseScreen:{},
@@ -55,9 +55,9 @@ var PlayScene = {
     //this._rush = this.game.add.sprite(30,1350, 'rush');
     //------------------------------------------------
     //-----------TIMER--------------------------------
-    this._timer = this.game.time.create(false);
+    //this._timer = this.game.time.create(false);
     //this._timer.loop(this._spawn_time, this.spawnEnemies, this);
-    this._timer.start();
+    //this._timer.start();
     //------------------------------------------------
 
     this.map = this.game.add.tilemap('tilemap');
@@ -69,7 +69,8 @@ var PlayScene = {
     this.groundLayer = this.map.createLayer('Estructuras');
     //plano de muerte
     this.death = this.map.createLayer('Death');
-    this._rush = this.game.add.sprite(70,3350, 'rush');
+    this._rush = this.game.add.sprite(500, 2000, 'rush', 1);
+    this._rush.scale.setTo(0.75, 0.75);
     this._pauseScreen = this.add.sprite(70,3350,'pauseScreen');
     this._pauseScreen.scale.setTo(2.5,2.8);
     this._pauseScreen.alpha = 0.8;
@@ -91,7 +92,7 @@ var PlayScene = {
     this._stopTrigger.create(388, 2517, 'stopTrigger');
     this._stopTrigger.create(2102, 2277, 'stopTrigger');
     this._stopTrigger.create(1636, 1893, 'stopTrigger');
-    this._stopTrigger.create(1446, 1893, 'stopTrigger');
+    this._stopTrigger.create(1399, 1893, 'stopTrigger');
     this._stopTrigger.create(341, 1557, 'stopTrigger');
     this._stopTrigger.create(2065, 1557, 'stopTrigger');
     this._stopTrigger.setAll('body.immovable', true);
@@ -157,12 +158,12 @@ var PlayScene = {
     //this.groundLayer.resizeWorld(); //resize world and adjust to the screen
 
     //nombre de la animación, frames, framerate, isloop
-    this._rush.animations.add('run',
+    /*this._rush.animations.add('run',
                   Phaser.Animation.generateFrameNames('rush_run',1,5,'',2),10,true);
     this._rush.animations.add('stop',
                   Phaser.Animation.generateFrameNames('rush_idle',1,1,'',2),0,false);
     this._rush.animations.add('jump',
-                   Phaser.Animation.generateFrameNames('rush_jump',2,2,'',2),0,false);
+                   Phaser.Animation.generateFrameNames('rush_jump',2,2,'',2),0,false);*/
     this.configure();
 
 //CODIGO DE ENEMIGOS  ----------------------------------------------------------------------
@@ -184,12 +185,36 @@ var PlayScene = {
 //Opción 2: Sin el Pool
     this._enemies = this.game.add.group();
     //this._enemies = this.game.add.physicsGroup(Phaser.Physics.ARCADE);
-    var enemy = new Enemy(this.game, 'zombie', this.game.rnd.between(850 , 900), 3350);
-    enemy.anchor.setTo(0.5, 0.5);
-    this._enemies.add(enemy);
     //this._enemies.setAll('body.collideWorldBounds', true);
+    //this.spawnEnemies(890, 3350);
+    this.spawnEnemies(1247, 3350);
+    //this.spawnEnemies(1700, 3350);
+    this.spawnEnemies(1274, 2803);
+    this.spawnEnemies(1950, 3350);
+    this.spawnEnemies(2105, 2871);
+    this.spawnEnemies(889, 2679);
+    this.spawnEnemies(777, 3063);
+    this.spawnEnemies(1117, 3063);
+    this.spawnEnemies(1467, 3063);
+    this.spawnEnemies(1862, 3063);
+    this.spawnEnemies(750, 2487);
+    this.spawnEnemies(1100, 2487);
+    this.spawnEnemies(1570, 2007);
+    this.spawnEnemies(1167, 2055);
+    this.spawnEnemies(1805, 2247);
+    this.spawnEnemies(2057, 1863);
+    this.spawnEnemies(350, 1863);
+    this.spawnEnemies(1179, 1863);
+    this.spawnEnemies(1555, 1507);
+    this.spawnEnemies(1700, 1507);
+    this.spawnEnemies(900, 1699);
 
-                // HAY QUE CREAR TRIGGERS PARA EL SPAWN DE ZOMBIES
+
+
+
+
+
+// HAY QUE CREAR TRIGGERS PARA EL SPAWN DE ZOMBIES
 
 //------------------------------------------------------------------------------------------------------------------
   },
@@ -235,7 +260,7 @@ var PlayScene = {
               //this._rush.animations.play('run');
             }else{
               this._playerState = PlayerState.STOP;
-              this._rush.animations.play('stop');
+              //this._rush.animations.play('stop');
             }
           }
           break;
@@ -317,13 +342,14 @@ var PlayScene = {
 		    this.checkPlayerWin();
         this._rushX = this._rush.x;
         this._rushY = this._rush.y;
-        //console.log(this._rushX );
-        //console.log(this._rushY );
+        console.log(this._rushX );
+        console.log(this._rushY );
         if(!this.game.physics.arcade.collide(this._enemies, this._stopTrigger)){
           this._enemies.forEach(function (zombie){
             zombie.update(/*this.game,*/ this._rushX, this._rushY, this._stopTrigger);
           },this);
       }
+
 
     // CUANDO SE COLISIONE CON LOS TRIGGER SE LLAMA A SPAWNENEMIES()
 
@@ -433,7 +459,7 @@ var PlayScene = {
 				this._rush.body.velocity.y = 0;
 				this._rush.body.velocity.x = 0;
         //-------------------TIMER--------------------------------------
-        this._timer.pause();
+        //this._timer.pause();
         //--------------------------------------------------------------
 
 
@@ -477,7 +503,7 @@ var PlayScene = {
 		this._rush.body.allowGravity = true;
 		this._rush.body.gravity.y = 20000;
     //-----------------TIMER--------------------------------
-    this._timer.resume();
+    //this._timer.resume();
     //------------------------------------------------------
 
 	},
@@ -507,7 +533,7 @@ var PlayScene = {
     }
   },
 
-  spawnEnemies: function() {
+  spawnEnemies: function(x, y) {
 
 // CAMBIAR PARA QUE SPAWNEEN EN UNA POS PREDETERMINADA CERCA DEL TRIGGER CORRESPONDIENTE
 
@@ -515,13 +541,13 @@ var PlayScene = {
       if(current_time - this._last_spawn_time > this._time_til_spawn){
 
         this._last_spawn_time = current_time;*/
-        var posRandX = (((Math.random() * (3 - 1) ) + 1) % 2 === 0) ? this.game.rnd.between(this._rush.x - 300, this._rush.x - 200) :
-                                                                        this.game.rnd.between(this._rush.x + 200, this._rush.x + 300);
-        var enemy = new Enemy(this.game, 'zombie', posRandX , 3093);//La  pos y tambien habria que cambiarla, sino se spawnearian
-        //solo en el suelo
+        //var posRandX = (((Math.random() * (3 - 1) ) + 1) % 2 === 0) ? this.game.rnd.between(this._rush.x - 300, this._rush.x - 200) :
+                                                                        //this.game.rnd.between(this._rush.x + 200, this._rush.x + 300);
+        var enemy = new Enemy(this.game, 'zombie', 5, x, y);
         enemy.anchor.setTo(0.5, 0.5);
+        enemy.scale.setTo(1.25, 1.25);
         this._enemies.add(enemy);
-        console.log("spawn motherfuckeeeeeeer");
+        //console.log("spawn motherfuckeeeeeeer");
     //}
   }
 };

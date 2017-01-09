@@ -19,7 +19,7 @@ var PlayScene = {
 	  _jetPack: 700,
     _playerState: PlayerState.STOP, //estado del player
     _direction: Direction.NONE,  //dirección inicial del player. NONE es ninguna dirección.
-	  _doubleJump: false,	//Booleano que nos permite ver si ya se ha realizado el doble salto. 
+	  _doubleJump: false,	//Booleano que nos permite ver si ya se ha realizado el doble salto.
 	  _alreadyJump: false, //Booleano que nos permite ver si ya se ha realizado el primer salto.
 	  _jetPackText: '100 %',
 	  _pause: false,
@@ -42,6 +42,9 @@ var PlayScene = {
   _stopTrigger: {},
   _laserBarrier: {},
   _coreItem: {},
+  _life: 100,
+  _hp: 'HP',
+
 
 
 
@@ -71,7 +74,7 @@ var PlayScene = {
     this.groundLayer = this.map.createLayer('Estructuras');
     //plano de muerte
     this.death = this.map.createLayer('Death');
-    this._rush = this.game.add.sprite(500, 2000, 'rush', 1);
+    this._rush = this.game.add.sprite(70, 3350, 'rush', 1);
     this._rush.scale.setTo(0.5, 0.5);
     this._pauseScreen = this.add.sprite(70,3350,'pauseScreen');
     this._pauseScreen.scale.setTo(2.5,2.8);
@@ -80,11 +83,11 @@ var PlayScene = {
     this._pauseScreen.y = this.game.camera.y;
     this._winTrigger = this.add.sprite(70, 680,'winTrigger');
     this._winTrigger.alpha = 0;
-	this._coreItem = this.add.sprite(237, 3355, 'coreItem');
+	this._coreItem = this.add.sprite(300, 3200, 'coreItem');
 	this._coreItem.scale.setTo(0.6,0.6);
 	this.game.physics.arcade.enable(this._coreItem);
 	this._coreItem.body.immovable = true;
-	
+
 
     this._stopTrigger = this.game.add.group();
     this._stopTrigger = this.game.add.physicsGroup();
@@ -130,7 +133,7 @@ var PlayScene = {
     this.backgroundLayer.setScale(3,3);
     this.death.setScale(3,3);
 
-	  
+
     //this.groundLayer.resizeWorld(); //resize world and adjust to the screen
 
     //nombre de la animación, frames, framerate, isloop
@@ -140,7 +143,7 @@ var PlayScene = {
                   Phaser.Animation.generateFrameNames('rush_idle',1,1,'',2),0,false);
     this._rush.animations.add('jump',
                    Phaser.Animation.generateFrameNames('rush_jump',2,2,'',2),0,false);*/
-    
+
 
 //CODIGO DE ENEMIGOS  ----------------------------------------------------------------------
 
@@ -185,12 +188,12 @@ var PlayScene = {
     this.spawnEnemies(1700, 1507);
     this.spawnEnemies(900, 1699);
 	//Barrera laser
-	this._laserBarrier = this.add.sprite(1376,1932, 'laserBarrier'); 
+	this._laserBarrier = this.add.sprite(1376,1932, 'laserBarrier');
 	this._laserBarrier.scale.setTo(1.6,1);
 	this.game.physics.arcade.enable(this._laserBarrier);
 	this._laserBarrier.body.immovable = true;
 	this._laserBarrier.body.moves = false;
-   
+
 	//Añadir los botones de pause.
 
 	this._pauseX = this.game.camera.x + (this.camera.width / 3);
@@ -221,6 +224,8 @@ var PlayScene = {
 	this._buttonMenu.inputEnable = false;
 
 
+  this._hp = this.game.add.text(this.game.world.width - 100, 50, 'HP : ',{ font: "65px Arial", fill: "#002AFA", align: "center" });
+  this._hp.font = 'Sniglet';
 
 
 	this.configure();
@@ -242,11 +247,11 @@ var PlayScene = {
 		this.game.physics.arcade.collide(this._rush, this._laserBarrier);
 		var collisionWithTilemap = this.game.physics.arcade.collide(this._rush, this.groundLayer);
 		if (this._pause === false){
-		
+
         var moveDirection = new Phaser.Point(0, 0);
         var movement = this.GetMovement();
 
-        
+
         //transitions
         switch(this._playerState){
           case PlayerState.STOP:
@@ -344,22 +349,30 @@ var PlayScene = {
 			console.log('va');
 			this._laserBarrier.destroy();
 			this._coreItem.destroy();
-			
+
 		}
 		this.jetPackPower();
         this.onCollisionEnemy();
 		this.checkPlayerWin();
         this._rushX = this._rush.x;
         this._rushY = this._rush.y;
-        console.log(this._rushX );
-        console.log(this._rushY );
-        if(!this.game.physics.arcade.collide(this._enemies, this._stopTrigger)){
+        //console.log(this._rushX );
+        //console.log(this._rushY );
+        /*if(!this.game.physics.arcade.collide(this._enemies, this._stopTrigger)){
           this._enemies.forEach(function (zombie){
-            zombie.update(/*this.game,*/ this._rushX, this._rushY, this._stopTrigger);
+            zombie.update(this.game, this._rushX, this._rushY, this._stopTrigger);
           },this);
-      }
+      }*/
+
+      this._enemies.forEach(function (zombie){
+          if(!this.game.physics.arcade.collide(zombie, this._stopTrigger)){
+            zombie.update(/*this.game,*/ this._rushX, this._rushY, this._stopTrigger);
+          }
+      },this);
 
 
+this._hp.text = "HP: " + this._life;
+//console.log(this._life);
     // CUANDO SE COLISIONE CON LOS TRIGGER SE LLAMA A SPAWNENEMIES()
 
 		}
@@ -537,19 +550,20 @@ var PlayScene = {
   //CODIGO DE ENEMIGOS
   onCollisionEnemy: function() {
     if(this.game.physics.arcade.collide(this._rush, this._enemies)){
-      //this.onPlayerDie();
-      console.log("fuuuuck");
+      if(this._life > 1) { this._life -= 2; console.log("fuuuuck");}
+      else this.onPlayerDie();
+
     }
   },
-  
+
   stopEnemies: function() {
-	  
+
 	  this._enemies.forEach(function (zombie){
             zombie.body.velocity.x = 0;
 			zombie.body.velocity.y = 0;
           },this);
-	  
-	  
+
+
   },
 
   spawnEnemies: function(x, y) {

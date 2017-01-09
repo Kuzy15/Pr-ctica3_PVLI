@@ -40,6 +40,8 @@ var PlayScene = {
   _rushX: null,
   _rushY: null,
   _stopTrigger: {},
+  _laserBarrier: {},
+  _coreItem: {},
 
 
 
@@ -78,6 +80,11 @@ var PlayScene = {
     this._pauseScreen.y = this.game.camera.y;
     this._winTrigger = this.add.sprite(70, 680,'winTrigger');
     this._winTrigger.alpha = 0;
+	this._coreItem = this.add.sprite(237, 3355, 'coreItem');
+	this._coreItem.scale.setTo(0.6,0.6);
+	this.game.physics.arcade.enable(this._coreItem);
+	this._coreItem.body.immovable = true;
+	
 
     this._stopTrigger = this.game.add.group();
     this._stopTrigger = this.game.add.physicsGroup();
@@ -133,7 +140,7 @@ var PlayScene = {
                   Phaser.Animation.generateFrameNames('rush_idle',1,1,'',2),0,false);
     this._rush.animations.add('jump',
                    Phaser.Animation.generateFrameNames('rush_jump',2,2,'',2),0,false);*/
-    this.configure();
+    
 
 //CODIGO DE ENEMIGOS  ----------------------------------------------------------------------
 
@@ -177,7 +184,13 @@ var PlayScene = {
     this.spawnEnemies(1555, 1507);
     this.spawnEnemies(1700, 1507);
     this.spawnEnemies(900, 1699);
-
+	//Barrera laser
+	this._laserBarrier = this.add.sprite(1376,1932, 'laserBarrier'); 
+	this._laserBarrier.scale.setTo(1.6,1);
+	this.game.physics.arcade.enable(this._laserBarrier);
+	this._laserBarrier.body.immovable = true;
+	this._laserBarrier.body.moves = false;
+   
 	//Añadir los botones de pause.
 
 	this._pauseX = this.game.camera.x + (this.camera.width / 3);
@@ -210,7 +223,7 @@ var PlayScene = {
 
 
 
-
+	this.configure();
 
 // HAY QUE CREAR TRIGGERS PARA EL SPAWN DE ZOMBIES
 
@@ -226,8 +239,10 @@ var PlayScene = {
 
 		this.checkPause();
 		this.game.physics.arcade.collide(this._enemies, this.groundLayer);
+		this.game.physics.arcade.collide(this._rush, this._laserBarrier);
 		var collisionWithTilemap = this.game.physics.arcade.collide(this._rush, this.groundLayer);
 		if (this._pause === false){
+		
         var moveDirection = new Phaser.Point(0, 0);
         var movement = this.GetMovement();
 
@@ -325,6 +340,12 @@ var PlayScene = {
         this.movement(moveDirection,5,
                       this.backgroundLayer.layer.widthInPixels*this.backgroundLayer.scale.x - 10);
         this.checkPlayerFell();
+		if(this.game.physics.arcade.collide(this._rush, this._coreItem)){
+			console.log('va');
+			this._laserBarrier.destroy();
+			this._coreItem.destroy();
+			
+		}
 		this.jetPackPower();
         this.onCollisionEnemy();
 		this.checkPlayerWin();
@@ -396,7 +417,7 @@ var PlayScene = {
       this.game.physics.startSystem(Phaser.Physics.ARCADE);
       this.game.stage.backgroundColor = '#a9f0ff';
       this.game.physics.arcade.enable(this._rush);
-		  this.game.physics.arcade.enable(this._winTrigger);
+	  this.game.physics.arcade.enable(this._winTrigger);
       this._rush.anchor.setTo(0.5, 0.5);
       this._rush.body.bounce.y = 0.2;
       this._rush.body.gravity.y = 20000;
@@ -525,6 +546,7 @@ var PlayScene = {
 	  
 	  this._enemies.forEach(function (zombie){
             zombie.body.velocity.x = 0;
+			zombie.body.velocity.y = 0;
           },this);
 	  
 	  

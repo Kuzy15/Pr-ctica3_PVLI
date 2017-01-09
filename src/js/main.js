@@ -44,7 +44,9 @@ var PreloaderScene = {
 	  this.game.load.image('powerbar', 'images/RedBar.png');
 	  this.game.load.image('pauseScreen', 'images/pause_screen.png');
 	  this.game.load.image('winTrigger', 'images/win_trigger.png');
-    this.game.load.image('stopTrigger', 'images/stopTrigger.png');
+	  this.game.load.image('stopTrigger', 'images/stopTrigger.png');
+	  this.game.load.image('laserBarrier','images/laser.png');
+	  this.game.load.image('coreItem', 'images/core.png'); 
 
       //this.game.load.image('zombie', 'images/zombiePrueba.png');//de momento solo cargo una imagen, luego pondre animaciones.
     this.game.load.spritesheet('zombie', 'images/ZombieSheet.png', 64, 64, 12);

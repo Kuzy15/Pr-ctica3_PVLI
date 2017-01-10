@@ -33,17 +33,17 @@ var PlayScene = {
     //_spawn_time: Math.random() * (25000-20000) + 20000,//(15s, 10s] Este tiempo hay que hacer que dependa de la velocidad del personaje
     //o del tiempo que queda para que acabe la partida si lo hacemos contrarreloj.
 	_dashPower: 1000,
-	_pauseScreen:{},
-	_pausex: 0,
+	_pauseScreen:{}, //Sprite de Pause.
+	_pausex: 0, //Variables que utilizamos para mover el sprite de pause con la camara.
 	_pauseY: 0,
-	_winTrigger: {},
+	_winTrigger: {},//Trigger que controla el win del player.
   _rushX: null,
   _rushY: null,
   _stopTrigger: {},
-  _laserBarrier: {},
-  _coreItem: {},
-  _life: 100,
-  _hp: 'HP',
+  _laserBarrier: {},//Sprite de barrera laser.
+  _coreItem: {},//Sprite del item que hay que recoger y que abre la puerta.
+  _life: 100,//Vida del personaje.
+  _bloodLayer: {},//Sprite que indica al jugador como va de vida.
 
 
 
@@ -74,21 +74,29 @@ var PlayScene = {
     this.groundLayer = this.map.createLayer('Estructuras');
     //plano de muerte
     this.death = this.map.createLayer('Death');
+	//Añadimos el sprite de sangre.
+	this._bloodLayer = this.add.sprite(70,3350,'bloodLayer');
+    this._bloodLayer.scale.setTo(0.3,0.3);
+	this._bloodLayer.alpha = 0;
+	//Añadimos al jugador.
     this._rush = this.game.add.sprite(70, 3350, 'rush', 1);
     this._rush.scale.setTo(0.5, 0.5);
+	//Añadimos el sprite de pause.
     this._pauseScreen = this.add.sprite(70,3350,'pauseScreen');
     this._pauseScreen.scale.setTo(2.5,2.8);
     this._pauseScreen.alpha = 0.8;
     this._pauseScreen.x = this.game.camera.x;
     this._pauseScreen.y = this.game.camera.y;
+	//Añadimos el trigger de victoria.
     this._winTrigger = this.add.sprite(70, 680,'winTrigger');
     this._winTrigger.alpha = 0;
+	//Añadimos el item 
 	this._coreItem = this.add.sprite(300, 3200, 'coreItem');
 	this._coreItem.scale.setTo(0.6,0.6);
 	this.game.physics.arcade.enable(this._coreItem);
 	this._coreItem.body.immovable = true;
 
-
+	
     this._stopTrigger = this.game.add.group();
     this._stopTrigger = this.game.add.physicsGroup();
     this._stopTrigger.enableBody = true;
@@ -109,21 +117,11 @@ var PlayScene = {
     this._stopTrigger.setAll('anchor.x', 0.5);
     this._stopTrigger.setAll('anchor.y', 0.5);
     this._stopTrigger.setAll('alpha', 0);
-	  //--------------------------------------------------------------------
-	  /*this._rush.powerBar = this.game.add.sprite(0,0,'powerbar'); No consigo implementar la barra de vida. voy a hacerlo con texto.
-	  //this._rush.powerBar.cropEnabled = true;
-	  //this._rush.powerBar.crop.width = (this._jetPack / this._jetPackPower) * this._rush.powerBar.width;
-	  this._rush.addChild(this._rush.powerBar);
-	  this._rush.powerBar.scale.setTo(0.2,0.2);
-	  this._rush.powerBar.x = -6;
-	  this._rush.powerBar.angle = 90;
-	  this._rush.powerBar.crop = new Phaser.Rectangle(0,0,this._rush.powerBar.width, this._rush.powerBar.height);
-	  */
-	  //---------------------------------------------------------------------
-	  this._jetPackText = this.game.add.text(-50, 0, "100 %", { font: "65px Arial", fill: "#002AFA", align: "center" });
-	  this._jetPackText.font = 'Sniglet';
-	  this._rush.addChild(this._jetPackText);
-	  this._jetPackText.scale.setTo(0.3,0.3);
+	//Añadimos el indicador de potencia del jetPack
+	this._jetPackText = this.game.add.text(-50, 0, "100 %", { font: "65px Arial", fill: "#002AFA", align: "center" });
+	this._jetPackText.font = 'Sniglet';
+	this._rush.addChild(this._jetPackText);
+	this._jetPackText.scale.setTo(0.3,0.3);
     //Colisiones con el plano de muerte y con suelo.
     this.map.setCollisionBetween(1, 5000, true, 'Death');
     this.map.setCollisionBetween(1, 5000, true, 'Estructuras');
@@ -195,7 +193,6 @@ var PlayScene = {
 	this._laserBarrier.body.moves = false;
 
 	//Añadir los botones de pause.
-
 	this._pauseX = this.game.camera.x + (this.camera.width / 3);
 	this._pauseY = this.game.camera.y - (this.camera.height / 2);
 	this._continueButton = this.game.add.button(0 , 0,
@@ -222,10 +219,11 @@ var PlayScene = {
 	this._buttonMenu.visible = false;
 	this._continueButton.inputEnable = false;
 	this._buttonMenu.inputEnable = false;
-
-
-  this._hp = this.game.add.text(this.game.world.width - 100, 50, 'HP : ',{ font: "65px Arial", fill: "#002AFA", align: "center" });
-  this._hp.font = 'Sniglet';
+	//Añadimos el sprite de la sangre.
+	this._bloodLayer = this.add.sprite(70,3350,'bloodLayer');
+    this._bloodLayer.scale.setTo(0.3,0.3);
+	this._bloodLayer.alpha = 0;
+	
 
 
 	this.configure();
@@ -238,15 +236,15 @@ var PlayScene = {
     //IS called one per frame.
   update: function () {
     //DEBUGS
-		//console.log('ea', this._jetPack);
-
-		//-----------------------------
-
-		this.checkPause();
-		this.game.physics.arcade.collide(this._enemies, this.groundLayer);
-		this.game.physics.arcade.collide(this._rush, this._laserBarrier);
-		var collisionWithTilemap = this.game.physics.arcade.collide(this._rush, this.groundLayer);
-		if (this._pause === false){
+		
+	//Chekeamos la pausa en el update.
+	this.checkPause();
+	//Comprobamos las colisiones.
+	this.game.physics.arcade.collide(this._enemies, this.groundLayer);
+	this.game.physics.arcade.collide(this._rush, this._laserBarrier);
+	var collisionWithTilemap = this.game.physics.arcade.collide(this._rush, this.groundLayer);
+		//Si la variable de pause está a false, si hay que comprobar el bucle del juego.
+	if (this._pause === false){
 
         var moveDirection = new Phaser.Point(0, 0);
         var movement = this.GetMovement();
@@ -345,14 +343,15 @@ var PlayScene = {
         this.movement(moveDirection,5,
                       this.backgroundLayer.layer.widthInPixels*this.backgroundLayer.scale.x - 10);
         this.checkPlayerFell();
-		if(this.game.physics.arcade.collide(this._rush, this._coreItem)){
-			console.log('va');
-			this._laserBarrier.destroy();
-			this._coreItem.destroy();
-
-		}
+		//Actualizamos el sprite de sangre para que esté centrado en la pantalla y se muestre según la vida.
+		this.updateBloodLayer();
+		//Comprobar colision con el item. No 
+		this.checkItem();
+		//Actualizamos el indicador de jetPack.
 		this.jetPackPower();
+		//Llamamos a las colisiones con el enemigo.
         this.onCollisionEnemy();
+		//Comprobamos si el jugador a ganado ya.
 		this.checkPlayerWin();
         this._rushX = this._rush.x;
         this._rushY = this._rush.y;
@@ -364,15 +363,15 @@ var PlayScene = {
           },this);
       }*/
 
-      this._enemies.forEach(function (zombie){
+        this._enemies.forEach(function (zombie){
           if(!this.game.physics.arcade.collide(zombie, this._stopTrigger)){
             zombie.update(/*this.game,*/ this._rushX, this._rushY, this._stopTrigger);
           }
-      },this);
+        },this);
 
 
-this._hp.text = "HP: " + this._life;
-//console.log(this._life);
+	
+	
     // CUANDO SE COLISIONE CON LOS TRIGGER SE LLAMA A SPAWNENEMIES()
 
 		}
@@ -438,6 +437,7 @@ this._hp.text = "HP: " + this._life;
       this._rush.body.velocity.x = 0;
       this.game.camera.follow(this._rush);
       this.game.camera.setSize(700,500)
+	  this._life = 100;
   },
   //move the player
   movement: function(point, xMin, xMax){
@@ -458,15 +458,15 @@ this._hp.text = "HP: " + this._life;
   },
 
 	jetPackPower : function(){
-    var power = ((this._jetPack / this._jetPackPower) * 100);
-		this._jetPackText.text = Math.round(power) + ' %';
-    if(power > 50)
-      this._jetPackText.fill = '#002AFA';
+		var power = ((this._jetPack / this._jetPackPower) * 100);
+			this._jetPackText.text = Math.round(power) + ' %';
+		if(power > 50)
+		  this._jetPackText.fill = '#002AFA';
 
-    if(power <= 50 && power > 30)
-      this._jetPackText.fill = '#F2FA00';
-		if(power <=30)
-			this._jetPackText.fill = '#FA0000';
+		if(power <= 50 && power > 30)
+		  this._jetPackText.fill = '#F2FA00';
+			if(power <=30)
+				this._jetPackText.fill = '#FA0000';
 
 	},
 
@@ -480,6 +480,7 @@ this._hp.text = "HP: " + this._life;
 				this._rush.body.velocity.y = 0;
 				this._rush.body.velocity.x = 0;
 				this.stopEnemies();
+				
         //-------------------TIMER--------------------------------------
         //this._timer.pause();
         //--------------------------------------------------------------
@@ -549,11 +550,17 @@ this._hp.text = "HP: " + this._life;
 
   //CODIGO DE ENEMIGOS
   onCollisionEnemy: function() {
+	 
+	  
     if(this.game.physics.arcade.collide(this._rush, this._enemies)){
-      if(this._life > 1) { this._life -= 2; console.log("fuuuuck");}
+		
+      if(this._life > 1) { this._life -= 1; console.log(this._life);}
       else this.onPlayerDie();
 
     }
+	else {
+		if (this._life < 100)this._life += 0.1;
+	}
   },
 
   stopEnemies: function() {
@@ -564,6 +571,24 @@ this._hp.text = "HP: " + this._life;
           },this);
 
 
+  },
+  
+  checkItem: function(){
+	  if(this.game.physics.arcade.collide(this._rush, this._coreItem)){
+			this._laserBarrier.destroy();
+			this._coreItem.destroy();
+		}  
+  },
+  
+  updateBloodLayer: function(){
+	  
+	  var x, y;
+	  x = this.game.camera.x;
+	  y = this.game.camera.y;
+	  this._bloodLayer.x = x;
+	  this._bloodLayer.y = y;
+	  this._bloodLayer.alpha = 1 - (this._life * 0.01);
+	  
   },
 
   spawnEnemies: function(x, y) {

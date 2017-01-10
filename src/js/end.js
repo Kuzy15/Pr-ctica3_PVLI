@@ -24,7 +24,7 @@ var end = {
 
     },
 
-    //TODO 7 declarar el callback del boton.
+    
 
     actionOnClick: function(){
         this.game.state.start('play');

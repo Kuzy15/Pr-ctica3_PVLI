@@ -20,7 +20,7 @@ var BootScene = {
 
   create: function () {
     //this.game.state.start('preloader');
-      this.game.state.start('menu');
+    this.game.state.start('menu');
   }
 };
 
@@ -36,12 +36,12 @@ var PreloaderScene = {
 
     this.load.onLoadStart.add(this.loadStart, this);
 
-      this.game.load.image('tiles', 'images/simples_pimples.png');
+    this.game.load.image('tiles', 'images/simples_pimples.png');
 	  this.game.load.image('tilesFiccion', 'images/tiles3.png');
 	  this.game.load.image('tilesPared', 'images/tiles2.png');
-      this.game.load.tilemap('tilemap', 'images/mapa.json', null, Phaser.Tilemap.TILED_JSON);
-      //this.game.load.atlas('rush', 'images/rush_spritesheet.png', 'images/rush_spritesheet.json', Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
-      this.game.load.spritesheet('rush', 'images/Hero1.png', 80, 124, 16);
+    this.game.load.tilemap('tilemap', 'images/mapa.json', null, Phaser.Tilemap.TILED_JSON);
+    //this.game.load.atlas('rush', 'images/rush_spritesheet.png', 'images/rush_spritesheet.json', Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
+    this.game.load.spritesheet('rush', 'images/Hero1.png', 80, 124, 16);
 	  this.game.load.image('powerbar', 'images/RedBar.png');
 	  this.game.load.image('pauseScreen', 'images/pause_screen.png');
 	  this.game.load.image('winTrigger', 'images/win_trigger.png');
@@ -50,7 +50,7 @@ var PreloaderScene = {
 	  this.game.load.image('coreItem', 'images/core.png');
 	  this.game.load.image('bloodLayer', 'images/sangre.png');
 
-      //this.game.load.image('zombie', 'images/zombiePrueba.png');//de momento solo cargo una imagen, luego pondre animaciones.
+
     this.game.load.spritesheet('zombie', 'images/ZombieSheet.png', 64, 64, 12);
     this.load.onLoadComplete.add(this.loadComplete,this);
 

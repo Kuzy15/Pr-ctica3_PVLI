@@ -20,35 +20,30 @@
 Enemy.prototype = Object.create(Phaser.Sprite.prototype);
 Enemy.constructor = Enemy;
 
-Enemy.prototype.update = function (/*game,*/ rushX, rushY, stopTrigger){
+Enemy.prototype.update = function (rushX, rushY, stopTrigger){
 
-  // PONER TRIGGERS PARA LIMITAR EL CAMINO DE LOS ZOMBIES     <-------------------- FALTA
   // SEGUIR AL JUGADOR SI ESTAN EN SU RANGO (OFFSET--> RUSH.X y RUSH.Y)
-//console.log(this.y);
- var offsetX = 200;// Probando
- var offsetY = 150;//...
 
- if((this.x + offsetX >= rushX && this.x < rushX) /*&& (!game.physics.arcade.collide(this, stopTrigger))*/){
+ var offsetX = 200;
+ var offsetY = 150;
+
+ if((this.x + offsetX >= rushX && this.x < rushX) ){
 
    if((this.y - offsetY <= rushY && this.y >= rushY) || (this.y + offsetY >= rushY && this.y <= rushY)){
-     this.body.velocity.x = 200;// Probando
+     this.body.velocity.x = 200;
    }
    else this.body.velocity.x = 0;
 
  }
- else if((this.x - offsetX <= rushX && this.x > rushX) /*&& (!game.physics.arcade.collide(this, stopTrigger))*/){
+ else if((this.x - offsetX <= rushX && this.x > rushX)){
 
    if((this.y - offsetY <= rushY && this.y >= rushY) || (this.y + offsetY >= rushY && this.y <= rushY)){
-     this.body.velocity.x = -200;// Probando
+     this.body.velocity.x = -200;
    }
    else this.body.velocity.x = 0;
 
-  }
-  else if (this.x === rushX) this.body.velocity.x = 0;// Se suppone que asi estarian quietos pero hacen cosas raras
-
-
-
-
+}
+else if (this.x === rushX) this.body.velocity.x = 0;
 
 }﻿
 

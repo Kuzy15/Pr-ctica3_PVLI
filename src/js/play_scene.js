@@ -32,7 +32,6 @@ var PlayScene = {
     //_timer: null,
     //_spawn_time: Math.random() * (25000-20000) + 20000,//(15s, 10s] Este tiempo hay que hacer que dependa de la velocidad del personaje
     //o del tiempo que queda para que acabe la partida si lo hacemos contrarreloj.
-	_dashPower: 1000,
 	_pauseScreen:{}, //Sprite de Pause.
 	_pausex: 0, //Variables que utilizamos para mover el sprite de pause con la camara.
 	_pauseY: 0,
@@ -118,10 +117,10 @@ var PlayScene = {
     this._stopTrigger.setAll('anchor.y', 0.5);
     this._stopTrigger.setAll('alpha', 0);
 	//Añadimos el indicador de potencia del jetPack
-	this._jetPackText = this.game.add.text(-50, 0, "100 %", { font: "65px Arial", fill: "#002AFA", align: "center" });
+	this._jetPackText = this.game.add.text(-80, -20, "100 %", { font: "65px Arial", fill: "#002AFA", align: "center" });
 	this._jetPackText.font = 'Sniglet';
 	this._rush.addChild(this._jetPackText);
-	this._jetPackText.scale.setTo(0.3,0.3);
+	this._jetPackText.scale.setTo(0.4,0.4);
     //Colisiones con el plano de muerte y con suelo.
     this.map.setCollisionBetween(1, 5000, true, 'Death');
     this.map.setCollisionBetween(1, 5000, true, 'Estructuras');
@@ -242,7 +241,7 @@ var PlayScene = {
 	//Comprobamos las colisiones.
 	this.game.physics.arcade.collide(this._enemies, this.groundLayer);
 	this.game.physics.arcade.collide(this._rush, this._laserBarrier);
-	var collisionWithTilemap = this.game.physics.arcade.collide(this._rush, this.groundLayer);
+	this.game.physics.arcade.collide(this._rush, this.groundLayer);
 		//Si la variable de pause está a false, si hay que comprobar el bucle del juego.
 	if (this._pause === false){
 
@@ -254,7 +253,8 @@ var PlayScene = {
         switch(this._playerState){
           case PlayerState.STOP:
           case PlayerState.RUN:
-          if(this.isJumping(collisionWithTilemap)){
+          if(this.isJumping()){
+			 
             this._playerState = PlayerState.JUMP;
 					   //this._alreadyJump = true;
             this._initialJumpHeight = this._rush.y;
@@ -328,9 +328,7 @@ var PlayScene = {
             }
             else {
               moveDirection.y = -this._jumpSpeed;
-						        if (this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN) && this._jetPack < this._jetPackPower/2){
-                      moveDirection.y = this._dashPower;
-                    }
+			
             }
           }
           if(this._playerState === PlayerState.FALLING){
@@ -355,8 +353,7 @@ var PlayScene = {
 		this.checkPlayerWin();
         this._rushX = this._rush.x;
         this._rushY = this._rush.y;
-        //console.log(this._rushX );
-        //console.log(this._rushY );
+        
         /*if(!this.game.physics.arcade.collide(this._enemies, this._stopTrigger)){
           this._enemies.forEach(function (zombie){
             zombie.update(this.game, this._rushX, this._rushY, this._stopTrigger);
@@ -378,9 +375,6 @@ var PlayScene = {
   },
 
 
-  canJump: function(collisionWithTilemap){
-      return this.isStanding() && collisionWithTilemap || this._jamping;
-  },
 
   onPlayerDie: function(){
       //TODO 6 Carga de 'gameOver';
@@ -404,9 +398,9 @@ var PlayScene = {
       return this._rush.body.blocked.down || this._rush.body.touching.down
   },
 
-  isJumping: function(collisionWithTilemap){
-      return this.canJump(collisionWithTilemap) &&
-          this.game.input.keyboard.downDuration(Phaser.Keyboard.UP,5);
+  isJumping: function(){
+      
+      return ( this.game.input.keyboard.downDuration(Phaser.Keyboard.UP,5));
   },
 
   GetMovement: function(){
@@ -517,7 +511,7 @@ var PlayScene = {
 	continueOnClick: function (){
 		//Mostramos los botones y reseteamos el juego.
 		this._pause = false;
-		console.log(this._pause);
+		
 		this._continueButton.visible = false;
 		this._buttonMenu.visible = false;
 		this._pauseScreen.visible = false;
@@ -554,12 +548,12 @@ var PlayScene = {
 	  
     if(this.game.physics.arcade.collide(this._rush, this._enemies)){
 		
-      if(this._life > 1) { this._life -= 1; console.log(this._life);}
+      if(this._life > 1) { this._life -= 2; }
       else this.onPlayerDie();
 
     }
 	else {
-		if (this._life < 100)this._life += 0.1;
+		if (this._life < 100)this._life += 0.5;
 	}
   },
 
@@ -605,7 +599,7 @@ var PlayScene = {
         enemy.anchor.setTo(0.5, 0.5);
         enemy.scale.setTo(1, 1);
         this._enemies.add(enemy);
-        //console.log("spawn motherfuckeeeeeeer");
+        
     //}
   }
 };

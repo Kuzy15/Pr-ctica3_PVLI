@@ -5,6 +5,7 @@
 var gameOver = require ('./gameover_scene.js');
 var playScene = require ('./play_scene.js');
 var menuScene = require ('./menu_scene.js');
+var end = require ('./end.js');
 
 
 
@@ -104,6 +105,7 @@ function init(){
                 game.state.add('preloader',PreloaderScene);
                 game.state.add('play',playScene);
                 game.state.add('gameOver', gameOver);
+                game.state.add('end', end);
                 game.state.start('boot');
 
 

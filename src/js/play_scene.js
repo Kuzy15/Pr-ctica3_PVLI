@@ -89,13 +89,13 @@ var PlayScene = {
 	//Añadimos el trigger de victoria.
     this._winTrigger = this.add.sprite(70, 680,'winTrigger');
     this._winTrigger.alpha = 0;
-	//Añadimos el item 
+	//Añadimos el item
 	this._coreItem = this.add.sprite(300, 3200, 'coreItem');
 	this._coreItem.scale.setTo(0.6,0.6);
 	this.game.physics.arcade.enable(this._coreItem);
 	this._coreItem.body.immovable = true;
 
-	
+
     this._stopTrigger = this.game.add.group();
     this._stopTrigger = this.game.add.physicsGroup();
     this._stopTrigger.enableBody = true;
@@ -222,7 +222,7 @@ var PlayScene = {
 	this._bloodLayer = this.add.sprite(70,3350,'bloodLayer');
     this._bloodLayer.scale.setTo(0.3,0.3);
 	this._bloodLayer.alpha = 0;
-	
+
 
 
 	this.configure();
@@ -235,7 +235,7 @@ var PlayScene = {
     //IS called one per frame.
   update: function () {
     //DEBUGS
-		
+
 	//Chekeamos la pausa en el update.
 	this.checkPause();
 	//Comprobamos las colisiones.
@@ -254,7 +254,7 @@ var PlayScene = {
           case PlayerState.STOP:
           case PlayerState.RUN:
           if(this.isJumping()){
-			 
+
             this._playerState = PlayerState.JUMP;
 					   //this._alreadyJump = true;
             this._initialJumpHeight = this._rush.y;
@@ -328,7 +328,7 @@ var PlayScene = {
             }
             else {
               moveDirection.y = -this._jumpSpeed;
-			
+
             }
           }
           if(this._playerState === PlayerState.FALLING){
@@ -343,7 +343,7 @@ var PlayScene = {
         this.checkPlayerFell();
 		//Actualizamos el sprite de sangre para que esté centrado en la pantalla y se muestre según la vida.
 		this.updateBloodLayer();
-		//Comprobar colision con el item. No 
+		//Comprobar colision con el item. No
 		this.checkItem();
 		//Actualizamos el indicador de jetPack.
 		this.jetPackPower();
@@ -353,7 +353,7 @@ var PlayScene = {
 		this.checkPlayerWin();
         this._rushX = this._rush.x;
         this._rushY = this._rush.y;
-        
+
         /*if(!this.game.physics.arcade.collide(this._enemies, this._stopTrigger)){
           this._enemies.forEach(function (zombie){
             zombie.update(this.game, this._rushX, this._rushY, this._stopTrigger);
@@ -367,8 +367,8 @@ var PlayScene = {
         },this);
 
 
-	
-	
+
+
     // CUANDO SE COLISIONE CON LOS TRIGGER SE LLAMA A SPAWNENEMIES()
 
 		}
@@ -381,6 +381,9 @@ var PlayScene = {
       this.game.state.start('gameOver');
 
   },
+  onPlayerWin: function(){
+    this.game.state.start('end');
+  },
 
   checkPlayerFell: function(){
       if(this.game.physics.arcade.collide(this._rush, this.death))
@@ -390,7 +393,7 @@ var PlayScene = {
 	checkPlayerWin: function(){
 
 		if(this.game.physics.arcade.collide(this._rush, this._winTrigger))
-            this.onPlayerDie();
+            this.onPlayerWin();
 
 	},
 
@@ -399,7 +402,7 @@ var PlayScene = {
   },
 
   isJumping: function(){
-      
+
       return ( this.game.input.keyboard.downDuration(Phaser.Keyboard.UP,5));
   },
 
@@ -474,7 +477,7 @@ var PlayScene = {
 				this._rush.body.velocity.y = 0;
 				this._rush.body.velocity.x = 0;
 				this.stopEnemies();
-				
+
         //-------------------TIMER--------------------------------------
         //this._timer.pause();
         //--------------------------------------------------------------
@@ -511,7 +514,7 @@ var PlayScene = {
 	continueOnClick: function (){
 		//Mostramos los botones y reseteamos el juego.
 		this._pause = false;
-		
+
 		this._continueButton.visible = false;
 		this._buttonMenu.visible = false;
 		this._pauseScreen.visible = false;
@@ -544,10 +547,10 @@ var PlayScene = {
 
   //CODIGO DE ENEMIGOS
   onCollisionEnemy: function() {
-	 
-	  
+
+
     if(this.game.physics.arcade.collide(this._rush, this._enemies)){
-		
+
       if(this._life > 1) { this._life -= 2; }
       else this.onPlayerDie();
 
@@ -566,23 +569,23 @@ var PlayScene = {
 
 
   },
-  
+
   checkItem: function(){
 	  if(this.game.physics.arcade.collide(this._rush, this._coreItem)){
 			this._laserBarrier.destroy();
 			this._coreItem.destroy();
-		}  
+		}
   },
-  
+
   updateBloodLayer: function(){
-	  
+
 	  var x, y;
 	  x = this.game.camera.x;
 	  y = this.game.camera.y;
 	  this._bloodLayer.x = x;
 	  this._bloodLayer.y = y;
 	  this._bloodLayer.alpha = 1 - (this._life * 0.01);
-	  
+
   },
 
   spawnEnemies: function(x, y) {
@@ -599,7 +602,7 @@ var PlayScene = {
         enemy.anchor.setTo(0.5, 0.5);
         enemy.scale.setTo(1, 1);
         this._enemies.add(enemy);
-        
+
     //}
   }
 };

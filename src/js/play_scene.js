@@ -43,6 +43,8 @@ var PlayScene = {
     _coreItem: {},//Sprite del item que hay que recoger y que abre la puerta.
     _life: 100,//Vida del personaje.
     _bloodLayer: {},//Sprite que indica al jugador como va de vida.
+	_mainTheme: {},
+	_propulsionSound: {},
 
 //--------------------------------------------------------------------------------
 
@@ -121,7 +123,9 @@ var PlayScene = {
     this.backgroundLayer.setScale(3,3);
     this.death.setScale(3,3);
 
-
+	this._mainTheme = this.game.add.audio('backgroundTheme');
+	this._propulsionSound = this.game.add.audio('propulsion');
+	this.game.sound.setDecodedCallback([this._mainTheme, this._propulsionSound], this.start, this);
     //this.groundLayer.resizeWorld(); //resize world and adjust to the screen
 
     //nombre de la animación, frames, framerate, isloop
@@ -327,6 +331,8 @@ var PlayScene = {
   onPlayerDie: function(){
       //TODO 6 Carga de 'gameOver';
       this.game.state.start('gameOver');
+	  this.destroyResources();
+	  
   },
 
   onPlayerWin: function(){
@@ -396,8 +402,12 @@ var PlayScene = {
   destroyResources: function(){
     this.tilemap.destroy();
     this.tiles.destroy();
-		this.tilesFiccion.destroy();
-		this.tilesPared.destroy();
+	this.tilesFiccion.destroy();
+	this.tilesPared.destroy();
+	this._mainTheme.destroy();
+	this.game.cache.removeSound('backgroundTheme');
+	this._propulsionSound.destroy();
+	this.game.cache.removeSound('propulsion');
     this.game.world.setBounds(0,0,800,600);
   },
 
@@ -483,6 +493,7 @@ var PlayScene = {
 	doubleJump: function(){
     if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP) && /*!this._doubleJump*/ this._jetPack >= 15 && this._alreadyJump){
       this._initialJumpHeight = this._rush.y;
+	  
 			//this._doubleJump = true;
 			this._jetPack -= 5;
 			return true;
@@ -546,6 +557,14 @@ var PlayScene = {
         this._enemies.add(enemy);
 
     //}
+  },
+  
+  start: function(){
+	  
+	  this._mainTheme.play();
+	  this._mainTheme.loop = true;
+	  
+	  
   }
 };
 

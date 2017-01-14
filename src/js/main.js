@@ -14,8 +14,12 @@ var BootScene = {
   preload: function () {
     // load here assets required for the loading screen
     this.game.load.image('preloader_bar', 'images/preloader_bar.png');
-    this.game.load.spritesheet('button', 'images/buttons.png', 168, 70);
+    //this.game.load.spritesheet('button', 'images/buttons.png', 168, 70);
+    this.game.load.image('buttonStart', 'images/START.png');
+    this.game.load.image('buttonReset', 'images/RESET.png');
+    this.game.load.image('buttonMenu', 'images/MAINMENU.png');
     this.game.load.image('logo', 'images/FondoDef.png');
+
   },
 
   create: function () {
@@ -30,12 +34,13 @@ var PreloaderScene = {
     this.loadingBar = this.game.add.sprite(100,300, 'preloader_bar');
     this.loadingBar.anchor.setTo(0, 0.5);
     this.game.load.setPreloadSprite(this.loadingBar);
-    this.game.stage.backgroundColor = "#000000";
-
-
+    this.game.stage.backgroundColor = "#000000"
 
     this.load.onLoadStart.add(this.loadStart, this);
 
+    this.game.load.image('wallpaper', 'images/wallpaperZOMBIE.png');
+    this.game.load.image('wallpaper2', 'images/YouWin.png');
+    this.game.load.image('go', 'images/YouDie.png');
     this.game.load.image('tiles', 'images/simples_pimples.png');
 	  this.game.load.image('tilesFiccion', 'images/tiles3.png');
 	  this.game.load.image('tilesPared', 'images/tiles2.png');

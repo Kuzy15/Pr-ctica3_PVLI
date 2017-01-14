@@ -1,26 +1,37 @@
 var GameOver = {
     create: function () {
         console.log("Game Over");
-        var button = this.game.add.button(500, 300,
-                                          'button',
+        this.game.world.setBounds(0,0,800,600);
+        var wallpaper = this.game.add.sprite(this.game.world.centerX,
+                                        this.game.world.centerY,
+                                        'wallpaper');
+        wallpaper.anchor.setTo(0.5, 0.5);
+        var button = this.game.add.button(400, 500,
+                                          'buttonReset',
                                           this.actionOnClick,
                                           this, 2, 1, 0);
         button.anchor.set(0.5);
-        var goText = this.game.add.text(400, 100, "GameOver");
-        var text = this.game.add.text(0, 0, "Reset Game");
-        text.anchor.set(0.5);
-        goText.anchor.set(0.5);
-        button.addChild(text);
+        button.alpha = 0.9;
 
 
-        var buttonMenu = this.game.add.button(250, 300,
-                                          'button',
+        //var goText = this.game.add.text(400, 100, "GameOver");
+        var goImage = this.game.add.sprite(400, 100, 'go');
+        goImage.anchor.set(0.5);
+        //var text = this.game.add.text(0, 0, "Reset");
+        //text.anchor.set(0.5);
+        //goText.anchor.set(0.5);
+        //button.addChild(text);
+
+
+        var buttonMenu = this.game.add.button(400, 300,
+                                          'buttonMenu',
                                           this.menuOnClick,
                                           this, 2, 2, 4);
         buttonMenu.anchor.set(0.5);
-        var textMenu = this.game.add.text(0, 0, "Return Main Menu");
-        textMenu.anchor.set(0.5);
-        buttonMenu.addChild(textMenu);
+        buttonMenu.alpha = 0.9;
+        //var textMenu = this.game.add.text(0, 0, "Main Menu");
+        //textMenu.anchor.set(0.5);
+        //buttonMenu.addChild(textMenu);
 
     },
 

@@ -331,8 +331,8 @@ var PlayScene = {
   onPlayerDie: function(){
       //TODO 6 Carga de 'gameOver';
       this.game.state.start('gameOver');
-	  this.destroyResources();
-	  
+	    //this.destroyResources();
+
   },
 
   onPlayerWin: function(){
@@ -493,7 +493,7 @@ var PlayScene = {
 	doubleJump: function(){
     if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP) && /*!this._doubleJump*/ this._jetPack >= 15 && this._alreadyJump){
       this._initialJumpHeight = this._rush.y;
-	  
+
 			//this._doubleJump = true;
 			this._jetPack -= 5;
 			return true;
@@ -558,13 +558,13 @@ var PlayScene = {
 
     //}
   },
-  
+
   start: function(){
-	  
+
 	  this._mainTheme.play();
 	  this._mainTheme.loop = true;
-	  
-	  
+
+
   }
 };
 

@@ -22,7 +22,7 @@ var PlayScene = {
 	  _doubleJump: false,	//Booleano que nos permite ver si ya se ha realizado el doble salto.
 	  _alreadyJump: false, //Booleano que nos permite ver si ya se ha realizado el primer salto.
 	  _jetPackText: '100 %',
-	  _pause: false,
+	  _pause: true,
 	  _continueButton: {},
 	  _buttonMenu: {},
     _enemies: {},//[]
@@ -41,10 +41,12 @@ var PlayScene = {
     _stopTrigger: {},
     _laserBarrier: {},//Sprite de barrera laser.
     _coreItem: {},//Sprite del item que hay que recoger y que abre la puerta.
-    _life: 100,//Vida del personaje.
+    _life: 0,//Vida del personaje.
     _bloodLayer: {},//Sprite que indica al jugador como va de vida.
 	_mainTheme: {},
 	_propulsionSound: {},
+	_easyModeButton: {},
+	_hardModeButton: {},
 
 //--------------------------------------------------------------------------------
 
@@ -125,7 +127,7 @@ var PlayScene = {
 
 	this._mainTheme = this.game.add.audio('backgroundTheme');
 	this._propulsionSound = this.game.add.audio('propulsion');
-	this.game.sound.setDecodedCallback([this._mainTheme, this._propulsionSound], this.start, this);
+	this.game.sound.setDecodedCallback([this._mainTheme, this._propulsionSound], this.startMusic, this);
     //this.groundLayer.resizeWorld(); //resize world and adjust to the screen
 
     //nombre de la animación, frames, framerate, isloop
@@ -201,7 +203,29 @@ var PlayScene = {
 	  this._bloodLayer = this.add.sprite(70,3350,'bloodLayer');
     this._bloodLayer.scale.setTo(0.3,0.3);
 	  this._bloodLayer.alpha = 0;
+	  //Botones de dificultad
+    this._easyModeButton = this.game.add.button(200, 3400,
+							  'bloodButton',
+							  this.easyModeAction,
+							  this, 2, 1, 0);
+    this._easyModeButton.anchor.set(0.5);
 
+	  var text = this.game.add.text(0, 0, "Easy");
+	  text.anchor.set(0.5);
+
+	this._easyModeButton.addChild(text);
+	this._easyModeButton.scale.setTo(0.8,0.8);
+    this._hardModeButton = this.game.add.button(550, 3400, 
+							  'bloodButton',
+							  this.hardModeAction,
+							  this, 2, 1, 0);
+    this._hardModeButton.anchor.set(0.5);
+
+	  var text = this.game.add.text(0, 0, "Hard");
+	  text.anchor.set(0.5);
+
+	  this._hardModeButton.addChild(text);
+	  this._hardModeButton.scale.setTo(0.8,0.8);
 	  this.configure();
   },
 
@@ -331,7 +355,7 @@ var PlayScene = {
   onPlayerDie: function(){
       //TODO 6 Carga de 'gameOver';
       this.game.state.start('gameOver');
-	    //this.destroyResources();
+	    this._mainTheme.stop();
 
   },
 
@@ -380,7 +404,7 @@ var PlayScene = {
     this.game.physics.startSystem(Phaser.Physics.ARCADE);
     this.game.stage.backgroundColor = '#a9f0ff';
     this.game.physics.arcade.enable(this._rush);
-	  this.game.physics.arcade.enable(this._winTrigger);
+	 this.game.physics.arcade.enable(this._winTrigger);
     this._rush.anchor.setTo(0.5, 0.5);
     this._rush.body.bounce.y = 0.2;
     this._rush.body.gravity.y = 20000;
@@ -388,7 +412,7 @@ var PlayScene = {
     this._rush.body.velocity.x = 0;
     this.game.camera.follow(this._rush);
     this.game.camera.setSize(700,500)
-	  this._life = 100;
+	
   },
   //move the player
   movement: function(point, xMin, xMax){
@@ -429,6 +453,7 @@ var PlayScene = {
            // Si el juego no esta pausado, lo ponemos en pause y mostramos los botones.
 			if (this._pause === false){
 				this._pause = true;
+				this._mainTheme.mute = true;
 				this._rush.body.bounce.y = 0;
 				this._rush.body.allowGravity = false;
 				this._rush.body.velocity.y = 0;
@@ -469,6 +494,7 @@ var PlayScene = {
 	continueOnClick: function (){
 		//Mostramos los botones y reseteamos el juego.
 		this._pause = false;
+		this._mainTheme.mute = false;
 
 		this._continueButton.visible = false;
 		this._buttonMenu.visible = false;
@@ -559,12 +585,36 @@ var PlayScene = {
     //}
   },
 
-  start: function(){
+  startMusic: function(){
 
-	  this._mainTheme.play();
+	  //this._mainTheme.play();
 	  this._mainTheme.loop = true;
 
 
+  },
+  
+  easyModeAction: function(){
+	  
+	  this._life = 100;
+	  this._pause = false;
+	  this._mainTheme.play();
+	  
+	  this._easyModeButton.destroy();
+	  this._hardModeButton.destroy(); 
+	  
+	  
+  },
+  
+  hardModeAction: function(){
+	  
+	  this._life = 10;
+	  this._bloodLayer.destroy();
+	  this._pause = false;
+	  this._mainTheme.play();
+	  
+	  this._easyModeButton.destroy();
+	  this._hardModeButton.destroy();
+	  
   }
 };
 

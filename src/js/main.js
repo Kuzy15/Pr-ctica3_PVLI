@@ -54,6 +54,7 @@ var PreloaderScene = {
 	  this.game.load.image('laserBarrier','images/laser.png');
 	  this.game.load.image('coreItem', 'images/core.png');
 	  this.game.load.image('bloodLayer', 'images/sangre.png');
+	  this.game.load.image('bloodButton', 'images/botonSangre.png')
 	  this.game.load.audio('backgroundTheme', ['audio/BackgroundTheme.mp3', 'audio/BackgroundTheme.ogg']);
 	  this.game.load.audio('propulsion', ['audio/Propulsion.mp3', 'audio/Propulsion.ogg']);
 

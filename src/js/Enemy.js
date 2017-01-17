@@ -15,6 +15,9 @@
   this.body.bounce.x = 0.1;
   this.anchor.setTo(0.5, 0.5);
   //this.scale.setTo(0.85,0.85);
+  var run = this.animations.add('run', [6, 7, 8], 10, false);
+  var runLeft = this.animations.add('runLeft', [3, 4, 5], 10, false);
+  var iddle = this.animations.add('iddle', [4, 7], 1, true);
 
 }
 Enemy.prototype = Object.create(Phaser.Sprite.prototype);
@@ -30,7 +33,8 @@ Enemy.prototype.update = function (rushX, rushY, stopTrigger){
  if((this.x + offsetX >= rushX && this.x < rushX) ){
 
    if((this.y - offsetY <= rushY && this.y >= rushY) || (this.y + offsetY >= rushY && this.y <= rushY)){
-     this.body.velocity.x = 200;
+     this.body.velocity.x = 250;
+
    }
    else this.body.velocity.x = 0;
 
@@ -38,13 +42,22 @@ Enemy.prototype.update = function (rushX, rushY, stopTrigger){
  else if((this.x - offsetX <= rushX && this.x > rushX)){
 
    if((this.y - offsetY <= rushY && this.y >= rushY) || (this.y + offsetY >= rushY && this.y <= rushY)){
-     this.body.velocity.x = -200;
+     this.body.velocity.x = -250;
+
    }
    else this.body.velocity.x = 0;
 
 }
 else if (this.x === rushX) this.body.velocity.x = 0;
 
+this.SetAnimations();
+
 }﻿
+
+Enemy.prototype.SetAnimations = function(){
+  if(this.body.velocity.x < 0)  this.animations.play('runLeft');
+  else if (this.body.velocity.x > 0)  this.animations.play('run');
+  else this.animations.play('iddle');
+}
 
 module.exports = Enemy;

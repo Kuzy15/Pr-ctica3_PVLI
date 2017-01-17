@@ -26,7 +26,7 @@ var PlayScene = {
 	  _continueButton: {},
 	  _buttonMenu: {},
     _enemies: {},//[]
-    _flipped : false,
+    //_flipped : false,
     //_pool: {},
     //_time_til_spawn: Math.random()*3000 + 2000,//Controla el tiempo de spawn
     //_last_spawn_time: 1000,
@@ -132,15 +132,17 @@ var PlayScene = {
     //this.groundLayer.resizeWorld(); //resize world and adjust to the screen
 
     //nombre de la animación, frames, framerate, isloop
-    var run = this._rush.animations.add('run', [8, 9, 11], 10, false);
-    var runLeft = this._rush.animations.add('runLeft', [4, 5, 7], 10, false);
-
-    var iddle = this._rush.animations.add('stop',[0, 1, 2, 3], 3, true);
+    var run = this._rush.animations.add('run', [8, 9, 10, 11], 10, false);
+    var runLeft = this._rush.animations.add('runLeft', [4, 5, 6, 7], 10, false);
+    var iddle = this._rush.animations.add('stop',[0, 1, 2], 3, true);
     var jump = this._rush.animations.add('jump',[12, 13, 14, 15], 0, true);
+
+
 
 
 //CODIGO DE ENEMIGOS  ----------------------------------------------------------------------
     this._enemies = this.game.add.group();
+
     //this._enemies = this.game.add.physicsGroup(Phaser.Physics.ARCADE);
     //this._enemies.setAll('body.collideWorldBounds', true);
     //this.spawnEnemies(890, 3350);
@@ -249,7 +251,7 @@ var PlayScene = {
           this._playerState = PlayerState.JUMP;
 					//this._alreadyJump = true;
           this._initialJumpHeight = this._rush.y;
-          //this._rush.animations.play('jump');
+          this._rush.animations.play('jump');
         }else{
           if(movement == Direction.RIGHT){
             this._playerState = PlayerState.RUN;
@@ -273,6 +275,7 @@ var PlayScene = {
             var currentJumpHeight = this._rush.y - this._initialJumpHeight;
             this._playerState = (currentJumpHeight*currentJumpHeight < this._jumpHight*this._jumpHight)
                       ? PlayerState.JUMP : PlayerState.FALLING;
+
             this._alreadyJump = true;
             break;
 				  }else {
@@ -286,10 +289,10 @@ var PlayScene = {
 				    this._alreadyJump = false;
             if(movement !== Direction.NONE){
               this._playerState = PlayerState.RUN;
-              //this._rush.animations.play('run');
+              this._rush.animations.play('run');
             }else{
               this._playerState = PlayerState.STOP;
-              //this._rush.animations.play('stop');
+              this._rush.animations.play('stop');
             }
           }
           else if (this.doubleJump()){

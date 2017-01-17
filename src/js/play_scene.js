@@ -136,8 +136,7 @@ var PlayScene = {
     var runLeft = this._rush.animations.add('runLeft', [4, 5, 7], 10, false);
 
     var iddle = this._rush.animations.add('stop',[0, 1, 2, 3], 3, true);
-    /*this._rush.animations.add('jump',
-                   Phaser.Animation.generateFrameNames('rush_jump',2,2,'',2),0,false);*/
+    var jump = this._rush.animations.add('jump',[12, 13, 14, 15], 0, true);
 
 
 //CODIGO DE ENEMIGOS  ----------------------------------------------------------------------

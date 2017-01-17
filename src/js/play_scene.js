@@ -26,6 +26,7 @@ var PlayScene = {
 	  _continueButton: {},
 	  _buttonMenu: {},
     _enemies: {},//[]
+    _flipped : false,
     //_pool: {},
     //_time_til_spawn: Math.random()*3000 + 2000,//Controla el tiempo de spawn
     //_last_spawn_time: 1000,
@@ -131,11 +132,11 @@ var PlayScene = {
     //this.groundLayer.resizeWorld(); //resize world and adjust to the screen
 
     //nombre de la animación, frames, framerate, isloop
-    /*this._rush.animations.add('run',
-                  Phaser.Animation.generateFrameNames('rush_run',1,5,'',2),10,true);
-    this._rush.animations.add('stop',
-                  Phaser.Animation.generateFrameNames('rush_idle',1,1,'',2),0,false);
-    this._rush.animations.add('jump',
+    var run = this._rush.animations.add('run', [8, 9, 11], 10, false);
+    var runLeft = this._rush.animations.add('runLeft', [4, 5, 7], 10, false);
+
+    var iddle = this._rush.animations.add('stop',[0, 1, 2, 3], 3, true);
+    /*this._rush.animations.add('jump',
                    Phaser.Animation.generateFrameNames('rush_jump',2,2,'',2),0,false);*/
 
 
@@ -215,7 +216,7 @@ var PlayScene = {
 
 	this._easyModeButton.addChild(text);
 	this._easyModeButton.scale.setTo(0.8,0.8);
-    this._hardModeButton = this.game.add.button(550, 3400, 
+    this._hardModeButton = this.game.add.button(550, 3400,
 							  'bloodButton',
 							  this.hardModeAction,
 							  this, 2, 1, 0);
@@ -251,12 +252,20 @@ var PlayScene = {
           this._initialJumpHeight = this._rush.y;
           //this._rush.animations.play('jump');
         }else{
-          if(movement !== Direction.NONE){
+          if(movement == Direction.RIGHT){
             this._playerState = PlayerState.RUN;
-              //this._rush.animations.play('run');
-            }else{
-              this._playerState = PlayerState.STOP;
-              //this._rush.animations.play('stop');
+            /*if(this.flipped) this._rush.scale.setTo(-0.5, 0.5);*/
+            this._rush.animations.play('run');
+          }
+          else if(movement == Direction.LEFT){
+            this._playerState = PlayerState.RUN;
+            /*this.flipped = true;
+            if(this.flipped){
+              // this._rush.scale.setTo(-0.5, 0.5);*/
+              this._rush.animations.play('runLeft');
+          }else{
+            this._playerState = PlayerState.STOP;
+              this._rush.animations.play('stop');
             }
           }
           break;
@@ -412,7 +421,7 @@ var PlayScene = {
     this._rush.body.velocity.x = 0;
     this.game.camera.follow(this._rush);
     this.game.camera.setSize(700,500)
-	
+
   },
   //move the player
   movement: function(point, xMin, xMax){
@@ -592,29 +601,29 @@ var PlayScene = {
 
 
   },
-  
+
   easyModeAction: function(){
-	  
+
 	  this._life = 100;
 	  this._pause = false;
 	  this._mainTheme.play();
-	  
+
 	  this._easyModeButton.destroy();
-	  this._hardModeButton.destroy(); 
-	  
-	  
+	  this._hardModeButton.destroy();
+
+
   },
-  
+
   hardModeAction: function(){
-	  
+
 	  this._life = 10;
 	  this._bloodLayer.destroy();
 	  this._pause = false;
 	  this._mainTheme.play();
-	  
+
 	  this._easyModeButton.destroy();
 	  this._hardModeButton.destroy();
-	  
+
   }
 };
 

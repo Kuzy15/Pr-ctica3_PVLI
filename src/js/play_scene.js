@@ -48,6 +48,7 @@ var PlayScene = {
 	_propulsionSound: {},
 	_easyModeButton: {},
 	_hardModeButton: {},
+	_zombiesSound: {},
 
 //--------------------------------------------------------------------------------
 
@@ -128,7 +129,8 @@ var PlayScene = {
 
 	this._mainTheme = this.game.add.audio('backgroundTheme');
 	this._propulsionSound = this.game.add.audio('propulsion');
-	this.game.sound.setDecodedCallback([this._mainTheme, this._propulsionSound], this.startMusic, this);
+	this._zombiesSound = this.game.add.audio('zombies');
+	this.game.sound.setDecodedCallback([this._mainTheme, this._propulsionSound, this._zombiesSound], this.startMusic, this);
     //this.groundLayer.resizeWorld(); //resize world and adjust to the screen
 
     //nombre de la animación, frames, framerate, isloop
@@ -286,7 +288,8 @@ var PlayScene = {
           if(this.isStanding()){
             //this._doubleJump = false;
   				  this._jetPack = this._jetPackPower;
-				    this._alreadyJump = false;
+				  this._alreadyJump = false;
+				  this._propulsionSound.mute = true;
             if(movement !== Direction.NONE){
               this._playerState = PlayerState.RUN;
               this._rush.animations.play('run');
@@ -366,12 +369,19 @@ var PlayScene = {
   onPlayerDie: function(){
       //TODO 6 Carga de 'gameOver';
       this.game.state.start('gameOver');
-	    this._mainTheme.stop();
+	  this._mainTheme.stop();
+	  this._zombiesSound.stop();
+	  this._propulsionSound.stop();
+		
 
   },
 
   onPlayerWin: function(){
     this.game.state.start('end');
+	this._mainTheme.stop();
+	this._zombiesSound.stop();
+	this._propulsionSound.stop();
+		
   },
 
   checkPlayerFell: function(){
@@ -531,11 +541,13 @@ var PlayScene = {
     if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP) && /*!this._doubleJump*/ this._jetPack >= 15 && this._alreadyJump){
       this._initialJumpHeight = this._rush.y;
 
-			//this._doubleJump = true;
+			this._propulsionSound.mute = false;
 			this._jetPack -= 5;
 			return true;
 		}
+		
     return false;
+	
 	},
 
   //CODIGO DE ENEMIGOS
@@ -600,6 +612,9 @@ var PlayScene = {
 
 	  //this._mainTheme.play();
 	  this._mainTheme.loop = true;
+	  this._propulsionSound.loop = true;
+	  this._zombiesSound.loop = true;
+	  this._zombiesSound.volume = 0.2;
 
 
   },
@@ -609,6 +624,9 @@ var PlayScene = {
 	  this._life = 100;
 	  this._pause = false;
 	  this._mainTheme.play();
+	  this._propulsionSound.play();
+	  this._propulsionSound.mute = true;
+	  this._zombiesSound.play();
 
 	  this._easyModeButton.destroy();
 	  this._hardModeButton.destroy();
@@ -622,6 +640,9 @@ var PlayScene = {
 	  this._bloodLayer.destroy();
 	  this._pause = false;
 	  this._mainTheme.play();
+	  this._propulsionSound.play();
+	  this._propulsionSound.mute = true;
+	  this._zombiesSound.play();
 
 	  this._easyModeButton.destroy();
 	  this._hardModeButton.destroy();

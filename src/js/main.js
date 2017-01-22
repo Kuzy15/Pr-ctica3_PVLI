@@ -18,7 +18,8 @@ var BootScene = {
     this.game.load.image('buttonStart', 'images/START.png');
     this.game.load.image('buttonReset', 'images/RESET.png');
     this.game.load.image('buttonMenu', 'images/MAINMENU.png');
-    this.game.load.image('logo', 'images/FondoDef.png');
+    this.game.load.image('logo', 'images/Portada.png');
+    this.game.load.audio('mainTheme', ['audio/menuTheme.mp3', 'audiomenuTheme.ogg']);
 
   },
 

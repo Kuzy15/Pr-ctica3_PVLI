@@ -1,6 +1,10 @@
 var GameOver = {
     create: function () {
-        console.log("Game Over");
+
+        this.music = this.game.add.audio('win');
+        this.music.volume = 0.5;
+        this.music.loop = true;
+        this.music.play();
         this.game.world.setBounds(0,0,800,600);
         var wallpaper = this.game.add.sprite(this.game.world.centerX,
                                         this.game.world.centerY,
@@ -38,10 +42,12 @@ var GameOver = {
     //TODO 7 declarar el callback del boton.
 
     actionOnClick: function(){
+      this.music.destroy();
       this.game.state.start('play');
     },
     menuOnClick: function(){
-        this.game.state.start('menu');
+      this.music.destroy();
+      this.game.state.start('menu');
     }
 
 };

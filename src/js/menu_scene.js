@@ -1,4 +1,5 @@
 var MenuScene = {
+    buttonStart: {},
     create: function () {
         this.music = this.game.add.audio('mainTheme');
         this.music.volume = 0.5;
@@ -10,21 +11,23 @@ var MenuScene = {
                                         this.game.world.centerY,
                                         'logo');
         logo.anchor.setTo(0.5, 0.5);
-        var buttonStart = this.game.add.button(this.game.world.centerX-10,
+        this.buttonStart = this.game.add.button(this.game.world.centerX-10,
                                                this.game.world.centerY+160,
                                                'buttonStart',
                                                this.actionOnClick,
                                                this, 2, 1, 0);
-        buttonStart.anchor.set(0.5);
-        buttonStart.alpha = 0.90;
-        buttonStart.scale.setTo(0.65, 0.65);
+        this.buttonStart.anchor.set(0.5);
+        this.buttonStart.alpha = 0.90;
+        this.buttonStart.scale.setTo(0.65, 0.65);
         //var style = { font: "40px Arial", fill: "#000000", align: "center"};
         //var textStart = this.game.add.text(0, 0, "Start", style);
         //textStart.font = 'Sniglet';
         //textStart.anchor.set(0.5);
         //buttonStart.addChild(textStart);
     },
-
+    update: function() {
+      this.buttonStart.rotation += 0.01;
+    },
     actionOnClick: function(){
       this.music.destroy();
       this.game.state.start('preloader');

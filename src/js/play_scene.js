@@ -42,12 +42,10 @@ var PlayScene = {
   _stopTrigger: {},
   _laserBarrier: {},//Sprite de barrera laser.
   _coreItem: {},//Sprite del item que hay que recoger y que abre la puerta.
-  _life: 0,//Vida del personaje.
+  _life: 100,//Vida del personaje.
   _bloodLayer: {},//Sprite que indica al jugador como va de vida.
 	_mainTheme: {},
 	_propulsionSound: {},
-	_easyModeButton: {},
-	_hardModeButton: {},
 	_zombiesSound: {},
 
 //--------------------------------------------------------------------------------
@@ -207,29 +205,6 @@ var PlayScene = {
 	  this._bloodLayer = this.add.sprite(70,3350,'bloodLayer');
     this._bloodLayer.scale.setTo(0.3,0.3);
 	  this._bloodLayer.alpha = 0;
-	  //Botones de dificultad
-    this._easyModeButton = this.game.add.button(200, 3400,
-							  'bloodButton',
-							  this.easyModeAction,
-							  this, 2, 1, 0);
-    this._easyModeButton.anchor.set(0.5);
-
-	  var text = this.game.add.text(0, 0, "Easy");
-	  text.anchor.set(0.5);
-
-	this._easyModeButton.addChild(text);
-	this._easyModeButton.scale.setTo(0.8,0.8);
-    this._hardModeButton = this.game.add.button(550, 3400,
-							  'bloodButton',
-							  this.hardModeAction,
-							  this, 2, 1, 0);
-    this._hardModeButton.anchor.set(0.5);
-
-	  var text = this.game.add.text(0, 0, "Hard");
-	  text.anchor.set(0.5);
-
-	  this._hardModeButton.addChild(text);
-	  this._hardModeButton.scale.setTo(0.8,0.8);
 	  this.configure();
   },
 
@@ -254,7 +229,6 @@ var PlayScene = {
 					//this._alreadyJump = true;
           this._propulsionSound.play();//--------------------------------------------------------------------------->
           this._propulsionSound.loop = true;
-          this._propulsionSound.volume = 2;
           this._initialJumpHeight = this._rush.y;
           this._rush.animations.play('jump');
         }else{
@@ -437,6 +411,9 @@ var PlayScene = {
     this._rush.body.velocity.x = 0;
     this.game.camera.follow(this._rush);
     this.game.camera.setSize(700,500)
+    this._pause = false;
+    //this._mainTheme.play();
+    //this._zombiesSound.play();
 
   },
   //move the player
@@ -624,44 +601,17 @@ var PlayScene = {
 
 	  //this._mainTheme.play();
 	  this._mainTheme.loop = true;
-    this._mainTheme.volume = 0.2;
+    this._mainTheme.volume = 0.3;
+    this._mainTheme.play();
+
 	  //this._propulsionSound.loop = true;----------------------------------------------------------------------------------->
     //this._propulsionSound.volume = 1.2;
 	  this._zombiesSound.loop = true;
-	  this._zombiesSound.volume = 0.1;
-
-
-  },
-
-  easyModeAction: function(){
-
-	  this._life = 100;
-	  this._pause = false;
-	  this._mainTheme.play();
-	  //this._propulsionSound.play();------------------------------------------------------------------>
-	  //this._propulsionSound.mute = true;
-	  this._zombiesSound.play();
-
-	  this._easyModeButton.destroy();
-	  this._hardModeButton.destroy();
-
+	  this._zombiesSound.volume = 0.2;
+    this._zombiesSound.play();
 
   },
 
-  hardModeAction: function(){
-
-	  this._life = 10;
-	  //this._bloodLayer.destroy();-------------------------------------------------------------------->
-	  this._pause = false;
-	  this._mainTheme.play();
-	  //this._propulsionSound.play();------------------------------------------------------------------------------------>
-	  //this._propulsionSound.mute = true;
-	  this._zombiesSound.play();
-
-	  this._easyModeButton.destroy();
-	  this._hardModeButton.destroy();
-
-  }
 };
 
 module.exports = PlayScene;

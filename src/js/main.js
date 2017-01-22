@@ -55,10 +55,11 @@ var PreloaderScene = {
 	  this.game.load.image('laserBarrier','images/laser.png');
 	  this.game.load.image('coreItem', 'images/core.png');
 	  this.game.load.image('bloodLayer', 'images/sangre.png');
-	  this.game.load.image('bloodButton', 'images/botonSangre.png')
+
 	  this.game.load.audio('backgroundTheme', ['audio/BackgroundTheme.mp3', 'audio/BackgroundTheme.ogg']);
 	  this.game.load.audio('propulsion', ['audio/enginehum3.ogg', 'audio/enginehum.mp3']);
 	  this.game.load.audio('zombies', 'audio/zombies.ogg');
+    this.game.load.audio('win', ['audio/Epic.ogg', 'audio/Epic.mp3']);
 
     this.game.load.spritesheet('zombie', 'images/ZombieSheet.png', 64, 64, 12);
     this.load.onLoadComplete.add(this.loadComplete,this);

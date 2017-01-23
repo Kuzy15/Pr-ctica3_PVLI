@@ -1,7 +1,8 @@
 'use strict';
 
-//var Pool = require('./Pool');
-var Enemy = require('./Enemy');
+
+var enemies = require('./Enemy.js');
+
 //Enumerados: PlayerState son los estado por los que pasa el player. Directions son las direcciones a las que se puede
 //mover el player.
 var PlayerState = {'JUMP':0, 'RUN':1, 'FALLING':2, 'STOP':3}
@@ -11,6 +12,7 @@ var Direction = {'LEFT':0, 'RIGHT':1, 'NONE':3}
 
 //Scena de juego.
 var PlayScene = {
+  _boss: {},
   _rush: {}, //player
   _speed: 300, //velocidad del player
   _jumpSpeed: 600, //velocidad de salto
@@ -146,6 +148,9 @@ var PlayScene = {
     //this._enemies = this.game.add.physicsGroup(Phaser.Physics.ARCADE);
     //this._enemies.setAll('body.collideWorldBounds', true);
     //this.spawnEnemies(890, 3350);
+    this._boss = new enemies.Boss(this.game, 'boss', 1, 900, 3350);
+    this._enemies.add(this._boss);
+    //console.log("hooooooooooooooooooooooooola", this._boss.y);
     this.spawnEnemies(1247, 3350);
     //this.spawnEnemies(1700, 3350);
     this.spawnEnemies(1274, 2803);
@@ -589,7 +594,7 @@ var PlayScene = {
         this._last_spawn_time = current_time;*/
         //var posRandX = (((Math.random() * (3 - 1) ) + 1) % 2 === 0) ? this.game.rnd.between(this._rush.x - 300, this._rush.x - 200) :
                                                                         //this.game.rnd.between(this._rush.x + 200, this._rush.x + 300);
-        var enemy = new Enemy(this.game, 'zombie', 5, x, y);
+        var enemy = new enemies.Enemy(this.game, 'zombie', 5, x, y);
         enemy.anchor.setTo(0.5, 0.5);
         enemy.scale.setTo(1, 1);
         this._enemies.add(enemy);

@@ -62,6 +62,8 @@ var PreloaderScene = {
     this.game.load.audio('win', ['audio/Epic.ogg', 'audio/Epic.mp3']);
 
     this.game.load.spritesheet('zombie', 'images/ZombieSheet.png', 64, 64, 12);
+    this.game.load.spritesheet('boss', 'images/boss.png', 45, 63.75, 12);
+
     this.load.onLoadComplete.add(this.loadComplete,this);
 
 

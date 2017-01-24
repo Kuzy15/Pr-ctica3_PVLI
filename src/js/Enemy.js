@@ -73,6 +73,7 @@ Zombie.prototype.SetAnimations = function(){
 function Boss(thiis, image, frame, x, y){
   Enemy.call(this, thiis, image, frame, x, y);
   this._last_shoot = 0;
+  this.life = 15;
   this.setAnimatioons();
 }
 

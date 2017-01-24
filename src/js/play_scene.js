@@ -49,6 +49,9 @@ var PlayScene = {
 	_zombiesSound: {},
   _bossGroup: {},
   _rocks: {},
+  _laserBarrier2: {},
+  _laserBarrier3: {},
+  _barrierTrigger: {},
 
 //--------------------------------------------------------------------------------
 
@@ -76,7 +79,7 @@ var PlayScene = {
     this._bloodLayer.scale.setTo(0.3,0.3);
 	  this._bloodLayer.alpha = 0;
 	  //Añadimos al jugador.
-    this._rush = this.game.add.sprite(800, 1507, 'rush', 1);
+    this._rush = this.game.add.sprite(200, 3350, 'rush', 1);
     this._rush.scale.setTo(0.5, 0.5);
 	  //Añadimos el sprite de pause.
     this._pauseScreen = this.add.sprite(70,3350,'pauseScreen');
@@ -87,6 +90,10 @@ var PlayScene = {
 	  //Añadimos el trigger de victoria.
     this._winTrigger = this.add.sprite(70, 680,'winTrigger');
     this._winTrigger.alpha = 0;
+
+    this._barrierTrigger = this.add.sprite(100, 1530,'laserBarrier');
+    this._barrierTrigger.scale.setTo(1.6,1)
+    this._barrierTrigger.alpha = 0;
 	  //Añadimos el core item
 	  this._coreItem = this.add.sprite(300, 3200, 'coreItem');
 	  this._coreItem.scale.setTo(0.6,0.6);
@@ -193,6 +200,14 @@ var PlayScene = {
 	  this.game.physics.arcade.enable(this._laserBarrier);
 	  this._laserBarrier.body.immovable = true;
 	  this._laserBarrier.body.moves = false;
+    //Barrera laser del boss
+    this._laserBarrier2 = this.add.sprite(100,1220, 'laserBarrier');
+	  this._laserBarrier2.scale.setTo(1.6,1);
+	  this.game.physics.arcade.enable(this._laserBarrier2);
+	  this._laserBarrier2.body.immovable = true;
+	  this._laserBarrier2.body.moves = false;
+
+
 
 	  //Añadir los botones de pause.
 	  this._pauseX = this.game.camera.x + (this.camera.width / 3);
@@ -237,7 +252,10 @@ var PlayScene = {
 
 	  this.game.physics.arcade.collide(this._enemies, this.groundLayer);
     this.game.physics.arcade.collide(this._bossGroup, this.groundLayer);
+    this.game.physics.arcade.collide(this._bossGroup, this._laserBarrier3);
+    this.game.physics.arcade.collide(this._rush, this._laserBarrier3);
 	  this.game.physics.arcade.collide(this._rush, this._laserBarrier);
+    this.game.physics.arcade.collide(this._rush, this._laserBarrier2);
 	  this.game.physics.arcade.collide(this._rush, this.groundLayer);
 		//Si la variable de pause está a false, si hay que comprobar el bucle del juego.
 	  if (this._pause === false){
@@ -350,6 +368,7 @@ var PlayScene = {
         this.onCollisionEnemy();
         //Comprobamos si el jugador a ganado ya.
         this.checkPlayerWin();
+        this.createBarrier();
         this._rushX = this._rush.x;
         this._rushY = this._rush.y;
 
@@ -420,6 +439,22 @@ var PlayScene = {
 
 	},
 
+  createBarrier: function () {
+
+    if(this.game.physics.arcade.overlap(this._rush, this._barrierTrigger)){
+
+      //Barrera laser boss entrada
+      this._barrierTrigger.destroy();
+      this._laserBarrier3 = this.add.sprite(100,1580, 'laserBarrier');
+  	  this._laserBarrier3.scale.setTo(1.6,1);
+  	  this.game.physics.arcade.enable(this._laserBarrier3);
+  	  this._laserBarrier3.body.immovable = true;
+  	  this._laserBarrier3.body.moves = false;
+    }
+
+
+  },
+
   isStanding: function(){
       return this._rush.body.blocked.down || this._rush.body.touching.down
   },
@@ -450,6 +485,7 @@ var PlayScene = {
     this.game.stage.backgroundColor = '#a9f0ff';
     this.game.physics.arcade.enable(this._rush);
 	  this.game.physics.arcade.enable(this._winTrigger);
+    this.game.physics.arcade.enable(this._barrierTrigger);
     this._rush.anchor.setTo(0.5, 0.5);
     this._rush.body.bounce.y = 0.2;
     this._rush.body.gravity.y = 20000;
@@ -511,6 +547,9 @@ var PlayScene = {
 				this._rush.body.velocity.y = 0;
 				this._rush.body.velocity.x = 0;
 				this.stopEnemies();
+        /*this._rocks.forEach(function(rock){
+          rock.body.velocity.x = 0;
+        });*/
 
         //-------------------TIMER--------------------------------------
         //this._timer.pause();
@@ -606,7 +645,7 @@ var PlayScene = {
   },
 
   stopEnemies: function() {
-    this._enemies.forEach(function (boss){
+    this._bossGroup.forEach(function (boss){
       boss.body.velocity.x = 0;
       boss.body.velocity.y = 0;
     })
@@ -625,6 +664,15 @@ var PlayScene = {
 			this._laserBarrier.destroy();
 			this._coreItem.destroy();
 		}
+  },
+
+  bossDie: function() {
+
+    this._bossGroup.forEach(function(boss){
+      if(boss.life <= 0)
+        this._laserBarrier2.destroy();
+    })
+
   },
 
   updateBloodLayer: function(){

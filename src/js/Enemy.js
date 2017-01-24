@@ -72,6 +72,7 @@ Zombie.prototype.SetAnimations = function(){
 
 function Boss(thiis, image, frame, x, y){
   Enemy.call(this, thiis, image, frame, x, y);
+  this._last_shoot = 0;
   this.setAnimatioons();
 }
 
@@ -80,8 +81,8 @@ Boss.prototype.constructor = Boss;
 
 Boss.prototype.setAnimatioons = function () {
 
-  var p = this.animations.add('run', Phaser.Animation.generateFrameNames('right', 1, 7, '', 0), 30, false);
-  var u = this.animations.add('runLeft', Phaser.Animation.generateFrameNames('left', 1, 7, '', 0), 30, false);
+  var p = this.animations.add('run', Phaser.Animation.generateFrameNames('right', 1, 7, '', 0), 10, false);
+  var u = this.animations.add('runLeft', Phaser.Animation.generateFrameNames('left', 1, 7, '', 0), 10, false);
   var t = this.animations.add('atkdch', Phaser.Animation.generateFrameNames('atkdch', 0, 6, '', 0), 30,false);
   var a =this.animations.add('atkizq', Phaser.Animation.generateFrameNames('atkizq', 0, 6, '', 0), 30,false);
 
@@ -97,7 +98,9 @@ Boss.prototype.move = function (rushX, rushY) {
   var offsetX = 200;
   var offsetY = 100;
 
-
+  if(this.body.velocity.x === 0){
+    this.body.velocity.x = -300;
+  }
 
   if((this.x + offsetX >= rushX && this.x < rushX) ){
 
@@ -118,7 +121,7 @@ Boss.prototype.move = function (rushX, rushY) {
 
 
 
- else if(this.body.x >= limDCH || this.body.velocity.x === 0){
+ else if(this.body.x >= limDCH ){
      this.body.velocity.x = -300;
      //animaciones DCH
     //this.animations.play('run');
@@ -134,23 +137,23 @@ Boss.prototype.move = function (rushX, rushY) {
 }
 
 Boss.prototype.attack = function (rushX, rushY, rocks, thiis) {
-  /*if(current_time - this._last_spawn_time > this._time_til_spawn){
-
-    this._last_spawn_time = current_time;*/
 
   var rock = rocks.getFirstDead();
-  var timeTilShoot = 20000;
-  var _last_shoot = 0;
+  var timeTilShoot = 10000;
+
+  var currentTime = thiis.time.now;
   var offsetX = 400;
+  //console.log(currentTime);
   if(rock){
-  if(thiis.time.now - _last_shoot > timeTilShoot){
+  if(currentTime - this._last_shoot > timeTilShoot){
     this.body.velocity.x = 0;
     if(this.x < rushX/*this.x + offsetX >= rushX && this.x < rushX*/){
       //dispara hacia la derecha
       //this.body.velocity.x = 0;
-      this.y -= 30;
+      //this.y -= 30;
       this.animations.play('atkdch');
-      _last_shoot = thiis.time.now;
+      this._last_shoot = thiis.time.now;
+
       rock.scale.setTo(0.5, 0.5);
       rock.reset(this.x + 35, this.y);
       rock.body.velocity.x = 550;
@@ -161,9 +164,9 @@ Boss.prototype.attack = function (rushX, rushY, rocks, thiis) {
     else if(this. x > rushX/*this.x - offsetX <= rushX && this.x > rushX*/){
       //disparahacia la izquierda
       //this.body.velocity.x = 0;
-      this.y -= 30;
+      //this.y -= 30;
       this.animations.play('atkizq');
-      _last_shoot = thiis.time.now;
+      this._last_shoot = thiis.time.now;
       rock.scale.setTo(0.5, 0.5);
       rock.reset(this.x - 35, this.y+10);
       rock.body.velocity.x = -550;

@@ -57,9 +57,9 @@ var PlayScene = {
     //this._rush = this.game.add.sprite(30,1350, 'rush');
     //------------------------------------------------
     //-----------TIMER--------------------------------
-    /*this._timer = this.game.time.create(false);
-    this._timer.loop(this._spawn_time, this.bossAttack, this);
-    this._timer.start();*/
+    //this._timer = this.game.time.create(false);
+    //this._timer.loop(this._spawn_time, this.bossAttack, this);
+    //this._timer.start();
     //------------------------------------------------
 
     this.map = this.game.add.tilemap('tilemap');
@@ -558,6 +558,7 @@ var PlayScene = {
 		this._rush.body.allowGravity = true;
 		this._rush.body.gravity.y = 20000;
     //-----------------TIMER--------------------------------
+    //
     //this._timer.resume();
     //------------------------------------------------------
 

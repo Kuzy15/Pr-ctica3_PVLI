@@ -55,6 +55,7 @@ var PreloaderScene = {
 	  this.game.load.image('laserBarrier','images/laser.png');
 	  this.game.load.image('coreItem', 'images/core.png');
 	  this.game.load.image('bloodLayer', 'images/sangre.png');
+    this.game.load.image('rock', 'images/rocks.png'),
 
 	  this.game.load.audio('backgroundTheme', ['audio/BackgroundTheme.mp3', 'audio/BackgroundTheme.ogg']);
 	  this.game.load.audio('propulsion', ['audio/enginehum3.ogg', 'audio/enginehum.mp3']);
@@ -62,7 +63,11 @@ var PreloaderScene = {
     this.game.load.audio('win', ['audio/Epic.ogg', 'audio/Epic.mp3']);
 
     this.game.load.spritesheet('zombie', 'images/ZombieSheet.png', 64, 64, 12);
-    this.game.load.spritesheet('boss', 'images/boss.png', 45, 63.75, 12);
+    this.game.load.atlas('boss', 'images/bossfinal.png', 'images/bossfinal2.json', Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
+    /*this.game.load.spritesheet('bossfinal', 'images/bossfinal.png', 77, 64, 70);
+    this.game.load.spritesheet('bossWalk', 'images/golem-walk.png', 64, 64, 28);
+    this.game.load.spritesheet('bossDie', 'images/golem-die.png', 64, 64, 14);*/
+
 
     this.load.onLoadComplete.add(this.loadComplete,this);
 

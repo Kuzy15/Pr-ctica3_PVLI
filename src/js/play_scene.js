@@ -27,14 +27,12 @@ var PlayScene = {
 	_pause: true,
 	_continueButton: {},
 	_buttonMenu: {},
-  _enemies: {},//[]
-    //_flipped : false,
-    //_pool: {},
-    //_time_til_spawn: Math.random()*3000 + 2000,//Controla el tiempo de spawn
-    //_last_spawn_time: 1000,
-    //_timer: null,
-    //_spawn_time: Math.random() * (25000-20000) + 20000,//(15s, 10s] Este tiempo hay que hacer que dependa de la velocidad del personaje
-    //o del tiempo que queda para que acabe la partida si lo hacemos contrarreloj.
+  _enemies: {},
+  //_time_til_spawn: Math.random()*3000 + 2000,//Controla el tiempo de spawn
+  _last_spawn_time: 1000,
+  _timer: null,
+  _spawn_time: Math.random() * (25000-20000) + 20000,//(15s, 10s]
+
 	_pauseScreen:{}, //Sprite de Pause.
 	_pausex: 0, //Variables que utilizamos para mover el sprite de pause con la camara.
 	_pauseY: 0,
@@ -49,6 +47,8 @@ var PlayScene = {
 	_mainTheme: {},
 	_propulsionSound: {},
 	_zombiesSound: {},
+  _bossGroup: {},
+  _rocks: {},
 
 //--------------------------------------------------------------------------------
 
@@ -57,9 +57,9 @@ var PlayScene = {
     //this._rush = this.game.add.sprite(30,1350, 'rush');
     //------------------------------------------------
     //-----------TIMER--------------------------------
-    //this._timer = this.game.time.create(false);
-    //this._timer.loop(this._spawn_time, this.spawnEnemies, this);
-    //this._timer.start();
+    /*this._timer = this.game.time.create(false);
+    this._timer.loop(this._spawn_time, this.bossAttack, this);
+    this._timer.start();*/
     //------------------------------------------------
 
     this.map = this.game.add.tilemap('tilemap');
@@ -76,7 +76,7 @@ var PlayScene = {
     this._bloodLayer.scale.setTo(0.3,0.3);
 	  this._bloodLayer.alpha = 0;
 	  //Añadimos al jugador.
-    this._rush = this.game.add.sprite(70, 3350, 'rush', 1);
+    this._rush = this.game.add.sprite(800, 1507, 'rush', 1);
     this._rush.scale.setTo(0.5, 0.5);
 	  //Añadimos el sprite de pause.
     this._pauseScreen = this.add.sprite(70,3350,'pauseScreen');
@@ -92,6 +92,18 @@ var PlayScene = {
 	  this._coreItem.scale.setTo(0.6,0.6);
 	  this.game.physics.arcade.enable(this._coreItem);
 	  this._coreItem.body.immovable = true;
+
+
+    //Rocas que lanza el enemigo
+    this._rocks = this.game.add.group();
+    this._rocks.enableBody = true;
+    this._rocks.physicsBodyType = Phaser.Physics.ARCADE;
+    this._rocks.createMultiple(1, 'rock');
+    this._rocks.setAll('outOfBoundsKill', true);
+    this._rocks.setAll('checkWorldBounds', true);
+    this._rocks.setAll('anchor.x', 0.5);
+    this._rocks.setAll('anchor.y', 0.5);
+
     //"Triggers" para detener a los zombies en ciertos puntos del mapa
     this._stopTrigger = this.game.add.group();
     this._stopTrigger = this.game.add.physicsGroup();
@@ -144,12 +156,14 @@ var PlayScene = {
 
 //CODIGO DE ENEMIGOS  ----------------------------------------------------------------------
     this._enemies = this.game.add.group();
+    this._bossGroup = this.game.add.group();
 
     //this._enemies = this.game.add.physicsGroup(Phaser.Physics.ARCADE);
     //this._enemies.setAll('body.collideWorldBounds', true);
     //this.spawnEnemies(890, 3350);
-    this._boss = new enemies.Boss(this.game, 'boss', 1, 900, 3350);
-    this._enemies.add(this._boss);
+    this._boss = new enemies.Boss(this.game, 'boss', 0, 900, 1547);
+    this._bossGroup.add(this._boss);
+
     //console.log("hooooooooooooooooooooooooola", this._boss.y);
     this.spawnEnemies(1247, 3350);
     //this.spawnEnemies(1700, 3350);
@@ -172,6 +186,7 @@ var PlayScene = {
     this.spawnEnemies(1555, 1507);
     this.spawnEnemies(1700, 1507);
     this.spawnEnemies(900, 1699);
+
 	  //Barrera laser
 	  this._laserBarrier = this.add.sprite(1376,1932, 'laserBarrier');
 	  this._laserBarrier.scale.setTo(1.6,1);
@@ -215,10 +230,13 @@ var PlayScene = {
 
     //IS called one per frame.
   update: function () {
-    //Chekeamos la pausa en el update.
+    //Chekseamos la pausa en el update.
 	  this.checkPause();
+     //console.log(this._rush.x, this._rush.y);
 	  //Comprobamos las colisiones.
+
 	  this.game.physics.arcade.collide(this._enemies, this.groundLayer);
+    this.game.physics.arcade.collide(this._bossGroup, this.groundLayer);
 	  this.game.physics.arcade.collide(this._rush, this._laserBarrier);
 	  this.game.physics.arcade.collide(this._rush, this.groundLayer);
 		//Si la variable de pause está a false, si hay que comprobar el bucle del juego.
@@ -343,9 +361,26 @@ var PlayScene = {
 
         this._enemies.forEach(function (zombie){
           if(!this.game.physics.arcade.collide(zombie, this._stopTrigger)){
-            zombie.update(/*this.game,*/ this._rushX, this._rushY, this._stopTrigger);
+            zombie.update(/*this.game,*/ this._rushX, this._rushY);
+
           }
         },this);
+
+        this._bossGroup.forEach(function(boss){
+          boss.move(this._rushX, this._rushY);
+        },this);
+
+        this._bossGroup.forEach(function(boss){//el jefe esta puesto como un grupo porque al ponerlo como un objeto unico
+          //no se pintaba sin embargo si estaba presente en el juego
+          boss.attack(this._rushX, this._rushY, this._rocks, this.game);
+
+        },this);
+
+        this.game.physics.arcade.overlap(this._rocks, this._rush, this.rockCollision, null, this);
+
+
+
+
 		}
   },
 
@@ -356,6 +391,12 @@ var PlayScene = {
 	  this._propulsionSound.stop();
     this._bloodLayer.alpha = 0;
 
+
+  },
+
+  rockCollision: function (rock, rush) {
+    rock.kill();
+    this.onPlayerDie();
 
   },
 
@@ -547,7 +588,12 @@ var PlayScene = {
   //CODIGO DE ENEMIGOS
   onCollisionEnemy: function() {
 
-    if(this.game.physics.arcade.collide(this._rush, this._enemies)){
+    /*if(this.game.physics.arcade.collide(this._rush, this._rocks)){
+
+      this.onPlayerDie();
+    }*/
+
+    if(this.game.physics.arcade.collide(this._rush, this._enemies) || this.game.physics.arcade.collide(this._rush, this._bossGroup)){
 
       if(this._life > 1) { this._life -= 2; }
       else this.onPlayerDie();
@@ -559,7 +605,12 @@ var PlayScene = {
   },
 
   stopEnemies: function() {
-
+    this._enemies.forEach(function (boss){
+      boss.body.velocity.x = 0;
+      boss.body.velocity.y = 0;
+    })
+    /*this._boss.body.velocity.x = 0;
+    this._boss.body.velocity.y = 0;*/
 	  this._enemies.forEach(function (zombie){
             zombie.body.velocity.x = 0;
 			zombie.body.velocity.y = 0;
@@ -594,13 +645,22 @@ var PlayScene = {
         this._last_spawn_time = current_time;*/
         //var posRandX = (((Math.random() * (3 - 1) ) + 1) % 2 === 0) ? this.game.rnd.between(this._rush.x - 300, this._rush.x - 200) :
                                                                         //this.game.rnd.between(this._rush.x + 200, this._rush.x + 300);
-        var enemy = new enemies.Enemy(this.game, 'zombie', 5, x, y);
+        var enemy = new enemies.Zombie(this.game, 'zombie', 5, x, y);
         enemy.anchor.setTo(0.5, 0.5);
         enemy.scale.setTo(1, 1);
         this._enemies.add(enemy);
 
     //}
   },
+
+  /*bossTimeAttack: function(){
+
+    var current_time = this.game.time;
+    if(current_time - this._last_spawn_time > this._time_til_spawn){
+      //llamar al metodo del boss que ataca
+      this._last_spawn_time = current_time;
+
+  },*/
 
   startMusic: function(){
 

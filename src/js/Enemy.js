@@ -84,8 +84,8 @@ Boss.prototype.setAnimatioons = function () {
 
   var p = this.animations.add('run', Phaser.Animation.generateFrameNames('right', 1, 7, '', 0), 10, false);
   var u = this.animations.add('runLeft', Phaser.Animation.generateFrameNames('left', 1, 7, '', 0), 10, false);
-  var t = this.animations.add('atkdch', Phaser.Animation.generateFrameNames('atkdch', 0, 6, '', 0), 30,false);
-  var a =this.animations.add('atkizq', Phaser.Animation.generateFrameNames('atkizq', 0, 6, '', 0), 30,false);
+  var t = this.animations.add('atkdch', Phaser.Animation.generateFrameNames('atkdch', 0, 6, '', 0), 5,false);
+  var a =this.animations.add('atkizq', Phaser.Animation.generateFrameNames('atkizq', 0, 6, '', 0), 5,false);
 
 }
 Boss.prototype.ChangeAnimations = function(){
@@ -103,7 +103,7 @@ Boss.prototype.move = function (rushX, rushY) {
     this.body.velocity.x = -300;
   }
 
-  if((this.x + offsetX >= rushX && this.x < rushX) ){
+  /*if((this.x + offsetX >= rushX && this.x < rushX) ){
 
     if((this.y - offsetY <= rushY && this.y >= rushY) || (this.y + offsetY >= rushY && this.y <= rushY)){
       this.body.velocity.x = 250;
@@ -118,7 +118,7 @@ Boss.prototype.move = function (rushX, rushY) {
       //this.animations.play('runLeft');
       //animciones IZQ
     }
- }  /*NO SE SI HABRIA QUE QUITARLO PARA CUANDO DISPARE ESTE QUIETO Y HAGA LA ANIMACION DE ATAQUE */
+ } /* /*NO SE SI HABRIA QUE QUITARLO PARA CUANDO DISPARE ESTE QUIETO Y HAGA LA ANIMACION DE ATAQUE */
 
 
 
@@ -140,7 +140,7 @@ Boss.prototype.move = function (rushX, rushY) {
 Boss.prototype.attack = function (rushX, rushY, rocks, thiis) {
 
   var rock = rocks.getFirstDead();
-  var timeTilShoot = 10000;
+  var timeTilShoot = 8000;
 
   var currentTime = thiis.time.now;
   var offsetX = 400;
@@ -155,7 +155,7 @@ Boss.prototype.attack = function (rushX, rushY, rocks, thiis) {
       this.animations.play('atkdch');
       this._last_shoot = thiis.time.now;
 
-      rock.scale.setTo(0.5, 0.5);
+      rock.scale.setTo(1, 1);
       rock.reset(this.x + 35, this.y);
       rock.body.velocity.x = 550;
 
@@ -168,7 +168,7 @@ Boss.prototype.attack = function (rushX, rushY, rocks, thiis) {
       //this.y -= 30;
       this.animations.play('atkizq');
       this._last_shoot = thiis.time.now;
-      rock.scale.setTo(0.5, 0.5);
+      rock.scale.setTo(1, 1);
       rock.reset(this.x - 35, this.y+10);
       rock.body.velocity.x = -550;
     }
